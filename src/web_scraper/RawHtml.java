@@ -1,22 +1,22 @@
+package web_scraper;
 import java.net.URI;
-import java.net.URISyntaxException;
 import java.net.http.HttpClient;
 import java.net.http.HttpRequest;
 import java.net.http.HttpResponse;
 
-public class Scraper {
-
-}
-
-class RawHtml{
+public class RawHtml
+{
   public final String html;
 
-  private RawHtml(String html) {
+  private RawHtml(String html)
+  {
     this.html = html;
   }
 
-  public static RawHtml get(String url){
-    try {
+  public static RawHtml get(String url)
+  {
+    try
+    {
       HttpClient client = HttpClient.newHttpClient();
 
       // create GET request with spoofed headers
@@ -31,7 +31,8 @@ class RawHtml{
       HttpResponse<String> response = client.send(request, HttpResponse.BodyHandlers.ofString());
       return new RawHtml(response.body());
 
-    } catch (Exception e) {
+    } catch (Exception e)
+    {
       System.err.println("Error while fetching HTML: " + e.getMessage());
       throw new RuntimeException(e);
     }
