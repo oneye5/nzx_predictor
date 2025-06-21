@@ -4,16 +4,9 @@ import java.net.http.HttpClient;
 import java.net.http.HttpRequest;
 import java.net.http.HttpResponse;
 
-public class RawHtml
+public class HtmlGetter
 {
-  public final String html;
-
-  private RawHtml(String html)
-  {
-    this.html = html;
-  }
-
-  public static RawHtml get(String url)
+  public static String get(String url)
   {
     try
     {
@@ -29,7 +22,7 @@ public class RawHtml
               .build();
 
       HttpResponse<String> response = client.send(request, HttpResponse.BodyHandlers.ofString());
-      return new RawHtml(response.body());
+      return response.body();
 
     } catch (Exception e)
     {
