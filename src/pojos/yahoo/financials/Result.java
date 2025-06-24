@@ -1,5 +1,6 @@
 package pojos.yahoo.financials;
 
+import javax.print.attribute.standard.NumberUp;
 import java.lang.reflect.Field;
 import java.util.ArrayList;
 import java.util.List;
@@ -77,13 +78,26 @@ public class Result {
 
     // Helper method to safely add items from lists, handling both FinancialFeatureBase and Object types
     private void addIfExists(List<FinancialFeatureBase> result, List<?> sourceList, int index) {
-        if (sourceList != null && index >= 0 && index < sourceList.size() && sourceList.get(index) != null) {
+        if (sourceList != null && index >= 0
+                && index < sourceList.size()
+                && sourceList.get(index) != null
+                && sourceList.get(index) instanceof FinancialFeatureBase) {
+
             Object item = sourceList.get(index);
-            if (item instanceof FinancialFeatureBase) {
-                result.add((FinancialFeatureBase) item);
-            }
-            // Note: Object types in the lists would need to be cast or handled differently
-            // depending on their actual runtime type
+            result.add((FinancialFeatureBase) item);
+        }
+        else { // handle missing values
+            var nullVal = new NullValue();
+            nullVal.reportedValue = new ReportedValue();
+            nullVal.asOfDate = "";
+            nullVal.currencyCode = "NULL";
+            nullVal.dataId = -1;
+            nullVal.periodType = "NULL";
+
+            nullVal.reportedValue.raw = Double.NaN;
+            nullVal.reportedValue.fmt = "NaN";
+
+            result.add(nullVal);
         }
     }
     public Meta meta;

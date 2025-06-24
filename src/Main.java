@@ -11,11 +11,11 @@ import java.util.List;
 public class Main
 {
   public static void main(String[] args){
-    var x = HtmlGetter.get(ApiUrls.HISTORIC_PRICES);
+    var x = HtmlGetter.get(ApiUrls.getHistoricPricesUrl("ANZ.NZ"));
     Gson gson = new Gson();
     var json = gson.fromJson(x, HistoricPriceInformation.class);
     gson = new Gson();
-    var y = HtmlGetter.get(ApiUrls.FINANCIAL_INFORMATION);
+    var y = HtmlGetter.get(ApiUrls.getFinancialInformationUrl("ANZ.NZ"));
     var json2 = gson.fromJson(y, FinancialInformation.class);
     json2.timeseries.preprocessResults();
 
