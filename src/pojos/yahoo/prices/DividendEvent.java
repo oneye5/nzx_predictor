@@ -1,4 +1,4 @@
-package pojos.yahoo;
+package pojos.yahoo.prices;
 
 public class DividendEvent {
   public double amount;

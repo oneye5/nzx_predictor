@@ -1,14 +1,28 @@
 import com.google.gson.Gson;
-import pojos.yahoo.YahooChartResponse;
+import pojos.yahoo.financials.FinancialInformation;
+import pojos.yahoo.prices.HistoricPriceInformation;
+import web_scraper.ApiUrls;
+import web_scraper.CsvWriter;
 import web_scraper.HtmlGetter;
 
 
 public class Main
 {
   public static void main(String[] args){
-    var x = HtmlGetter.get("https://query1.finance.yahoo.com/v8/finance/chart/ANZ.NZ?interval=1d&period1=1718695594&period2=99999999999&includeAdjustedClose=true");
+    var x = HtmlGetter.get(ApiUrls.HISTORIC_PRICES);
     Gson gson = new Gson();
-    var json = gson.fromJson(x, YahooChartResponse.class);
-    System.out.println(json);
+    var json = gson.fromJson(x, HistoricPriceInformation.class);
+    gson = new Gson();
+    var y = HtmlGetter.get(ApiUrls.FINANCIAL_INFORMATION);
+    var json2 = gson.fromJson(y, FinancialInformation.class);
+    CsvWriter csvWriter = new CsvWriter();
+    csvWriter.preprocessFinancial(json2);
+    for(var result : json2.timeseries.result)
+    {
+      if(result.annualBasicAverageShares == null)
+        continue;
+      System.out.println(result.annualTotalRevenue);
+    }
+    System.out.println(y);
   }
 }

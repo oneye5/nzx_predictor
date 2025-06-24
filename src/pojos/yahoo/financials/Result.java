@@ -1,0 +1,55 @@
+package pojos.yahoo.financials;
+
+import java.util.List;
+
+public class Result{
+    public Meta meta;
+    public List<Integer> timestamp;
+    public List<AnnualTaxEffectOfUnusualItem> annualTaxEffectOfUnusualItems;
+    public List<AnnualNetIncomeContinuousOperation> annualNetIncomeContinuousOperations;
+    public List<Object> annualOtherNonInterestExpense;
+    public List<Object> annualAmortization;
+    public List<TrailingTaxProvision> trailingTaxProvision;
+    public List<TrailingTaxEffectOfUnusualItem> trailingTaxEffectOfUnusualItems;
+    public List<TrailingRentAndLandingFee> trailingRentAndLandingFees;
+    public List<TrailingTotalPremiumsEarned> trailingTotalPremiumsEarned;
+    public List<AnnualTotalRevenue> annualTotalRevenue;
+    public List<AnnualAverageDilutionEarning> annualAverageDilutionEarnings;
+    public List<TrailingSellingGeneralAndAdministration> trailingSellingGeneralAndAdministration;
+    public List<AnnualDilutedNIAvailtoComStockholder> annualDilutedNIAvailtoComStockholders;
+    public List<TrailingFeesandCommissionExpense> trailingFeesandCommissionExpense;
+    public List<TrailingNetIncomeContinuousOperation> trailingNetIncomeContinuousOperations;
+    public List<AnnualTotalPremiumsEarned> annualTotalPremiumsEarned;
+    public List<AnnualTaxRateForCalc> annualTaxRateForCalcs;
+    public List<TrailingTaxRateForCalc> trailingTaxRateForCalcs;
+    public List<AnnualWriteOff> annualWriteOff;
+    public List<TrailingNetIncomeCommonStockholder> trailingNetIncomeCommonStockholders;
+    public List<Object> annualGainOnSaleOfSecurity;
+    public List<AnnualNetIncomeCommonStockholder> annualNetIncomeCommonStockholders;
+    public List<AnnualTotalUnusualItem> annualTotalUnusualItems;
+    public List<Object> annualAmortizationOfIntangiblesIncomeStatement;
+    public List<AnnualDepreciationIncomeStatement> annualDepreciationIncomeStatement;
+    public List<Object> annualNonInterestExpense;
+    public List<TrailingInterestIncome> trailingInterestIncome;
+    public List<AnnualNetIncome> annualNetIncome;
+    public List<AnnualFeesandCommissionExpense> annualFeesandCommissionExpense;
+    public List<TrailingAverageDilutionEarning> trailingAverageDilutionEarnings;
+    public List<Object> annualNetOccupancyExpense;
+    public List<TrailingGeneralAndAdministrativeExpense> trailingGeneralAndAdministrativeExpense;
+    public List<AnnualSellingGeneralAndAdministration> annualSellingGeneralAndAdministration;
+    public List<AnnualIncomefromAssociatesandOtherParticipatingInterest> annualIncomefromAssociatesandOtherParticipatingInterests;
+    public List<TrailingReconciledDepreciation> trailingReconciledDepreciation;
+    public List<AnnualTaxProvision> annualTaxProvision;
+    public List<AnnualGeneralAndAdministrativeExpense> annualGeneralAndAdministrativeExpense;
+    public List<TrailingDepreciationIncomeStatement> trailingDepreciationIncomeStatement;
+    public List<TrailingNetIncomeFromContinuingOperationNetMinorityInterest> trailingNetIncomeFromContinuingOperationNetMinorityInterest;
+    public List<AnnualOtherSpecialCharge> annualOtherSpecialCharges;
+    public List<AnnualBasicEP> annualBasicEPS;
+    public List<TrailingNetIncomeIncludingNoncontrollingInterest> trailingNetIncomeIncludingNoncontrollingInterests;
+    public List<AnnualNetIncomeIncludingNoncontrollingInterest> annualNetIncomeIncludingNoncontrollingInterests;
+    public List<TrailingNonInterestIncome> trailingNonInterestIncome;
+    public List<AnnualReconciledDepreciation> annualReconciledDepreciation;
+    public List<AnnualBasicAverageShare> annualBasicAverageShares;
+    public List<AnnualNetIncomeFromContinuingOperationNetMinorityInterest> annualNetIncomeFromContinuingOperationNetMinorityInterest;
+    public List<Object> annualOccupancyAndEquipment;
+}

@@ -1,4 +1,4 @@
-package pojos.yahoo;
+package pojos.yahoo.prices;
 import java.util.List;
 
 public class Indicators {
