@@ -6,4 +6,8 @@ public class FinancialFeatureBase {
   public String periodType;
   public String currencyCode;
   public ReportedValue reportedValue;
+
+  public String getFeatureType() {
+    return super.getClass().getSimpleName();
+  }
 }

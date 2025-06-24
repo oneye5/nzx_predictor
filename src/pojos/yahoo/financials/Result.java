@@ -1,8 +1,91 @@
 package pojos.yahoo.financials;
 
+import java.lang.reflect.Field;
+import java.util.ArrayList;
 import java.util.List;
 
-public class Result{
+public class Result {
+    public List<FinancialFeatureBase> getApplicableInfo(long time) {
+        List<FinancialFeatureBase> applicableInfo = new ArrayList<>();
+
+        // Find the most recent timestamp that is <= the given time
+        int applicableIndex = -1;
+        for (int i = 0; i < timestamp.size(); i++) {
+            if (timestamp.get(i) <= time) {
+                if (applicableIndex == -1 || timestamp.get(i) > timestamp.get(applicableIndex)) {
+                    applicableIndex = i;
+                }
+            }
+        }
+
+        // If no applicable timestamp found, return empty list
+        if (applicableIndex == -1) {
+            return applicableInfo;
+        }
+
+        // Helper method to safely add non-null items from lists
+        addIfExists(applicableInfo, annualTaxEffectOfUnusualItems, applicableIndex);
+        addIfExists(applicableInfo, annualNetIncomeContinuousOperations, applicableIndex);
+        addIfExists(applicableInfo, annualOtherNonInterestExpense, applicableIndex);
+        addIfExists(applicableInfo, annualAmortization, applicableIndex);
+        addIfExists(applicableInfo, trailingTaxProvision, applicableIndex);
+        addIfExists(applicableInfo, trailingTaxEffectOfUnusualItems, applicableIndex);
+        addIfExists(applicableInfo, trailingRentAndLandingFees, applicableIndex);
+        addIfExists(applicableInfo, trailingTotalPremiumsEarned, applicableIndex);
+        addIfExists(applicableInfo, annualTotalRevenue, applicableIndex);
+        addIfExists(applicableInfo, annualAverageDilutionEarnings, applicableIndex);
+        addIfExists(applicableInfo, trailingSellingGeneralAndAdministration, applicableIndex);
+        addIfExists(applicableInfo, annualDilutedNIAvailtoComStockholders, applicableIndex);
+        addIfExists(applicableInfo, trailingFeesandCommissionExpense, applicableIndex);
+        addIfExists(applicableInfo, trailingNetIncomeContinuousOperations, applicableIndex);
+        addIfExists(applicableInfo, annualTotalPremiumsEarned, applicableIndex);
+        addIfExists(applicableInfo, annualTaxRateForCalcs, applicableIndex);
+        addIfExists(applicableInfo, trailingTaxRateForCalcs, applicableIndex);
+        addIfExists(applicableInfo, annualWriteOff, applicableIndex);
+        addIfExists(applicableInfo, trailingNetIncomeCommonStockholders, applicableIndex);
+        addIfExists(applicableInfo, annualGainOnSaleOfSecurity, applicableIndex);
+        addIfExists(applicableInfo, annualNetIncomeCommonStockholders, applicableIndex);
+        addIfExists(applicableInfo, annualTotalUnusualItems, applicableIndex);
+        addIfExists(applicableInfo, annualAmortizationOfIntangiblesIncomeStatement, applicableIndex);
+        addIfExists(applicableInfo, annualDepreciationIncomeStatement, applicableIndex);
+        addIfExists(applicableInfo, annualNonInterestExpense, applicableIndex);
+        addIfExists(applicableInfo, trailingInterestIncome, applicableIndex);
+        addIfExists(applicableInfo, annualNetIncome, applicableIndex);
+        addIfExists(applicableInfo, annualFeesandCommissionExpense, applicableIndex);
+        addIfExists(applicableInfo, trailingAverageDilutionEarnings, applicableIndex);
+        addIfExists(applicableInfo, annualNetOccupancyExpense, applicableIndex);
+        addIfExists(applicableInfo, trailingGeneralAndAdministrativeExpense, applicableIndex);
+        addIfExists(applicableInfo, annualSellingGeneralAndAdministration, applicableIndex);
+        addIfExists(applicableInfo, annualIncomefromAssociatesandOtherParticipatingInterests, applicableIndex);
+        addIfExists(applicableInfo, trailingReconciledDepreciation, applicableIndex);
+        addIfExists(applicableInfo, annualTaxProvision, applicableIndex);
+        addIfExists(applicableInfo, annualGeneralAndAdministrativeExpense, applicableIndex);
+        addIfExists(applicableInfo, trailingDepreciationIncomeStatement, applicableIndex);
+        addIfExists(applicableInfo, trailingNetIncomeFromContinuingOperationNetMinorityInterest, applicableIndex);
+        addIfExists(applicableInfo, annualOtherSpecialCharges, applicableIndex);
+        addIfExists(applicableInfo, annualBasicEPS, applicableIndex);
+        addIfExists(applicableInfo, trailingNetIncomeIncludingNoncontrollingInterests, applicableIndex);
+        addIfExists(applicableInfo, annualNetIncomeIncludingNoncontrollingInterests, applicableIndex);
+        addIfExists(applicableInfo, trailingNonInterestIncome, applicableIndex);
+        addIfExists(applicableInfo, annualReconciledDepreciation, applicableIndex);
+        addIfExists(applicableInfo, annualBasicAverageShares, applicableIndex);
+        addIfExists(applicableInfo, annualNetIncomeFromContinuingOperationNetMinorityInterest, applicableIndex);
+        addIfExists(applicableInfo, annualOccupancyAndEquipment, applicableIndex);
+
+        return applicableInfo;
+    }
+
+    // Helper method to safely add items from lists, handling both FinancialFeatureBase and Object types
+    private void addIfExists(List<FinancialFeatureBase> result, List<?> sourceList, int index) {
+        if (sourceList != null && index >= 0 && index < sourceList.size() && sourceList.get(index) != null) {
+            Object item = sourceList.get(index);
+            if (item instanceof FinancialFeatureBase) {
+                result.add((FinancialFeatureBase) item);
+            }
+            // Note: Object types in the lists would need to be cast or handled differently
+            // depending on their actual runtime type
+        }
+    }
     public Meta meta;
     public List<Integer> timestamp;
     public List<AnnualTaxEffectOfUnusualItem> annualTaxEffectOfUnusualItems;

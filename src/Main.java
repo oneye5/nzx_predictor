@@ -5,6 +5,8 @@ import web_scraper.ApiUrls;
 import web_scraper.CsvWriter;
 import web_scraper.HtmlGetter;
 
+import java.util.List;
+
 
 public class Main
 {
@@ -15,14 +17,11 @@ public class Main
     gson = new Gson();
     var y = HtmlGetter.get(ApiUrls.FINANCIAL_INFORMATION);
     var json2 = gson.fromJson(y, FinancialInformation.class);
+    json2.timeseries.preprocessResults();
+
     CsvWriter csvWriter = new CsvWriter();
-    csvWriter.preprocessFinancial(json2);
-    for(var result : json2.timeseries.result)
-    {
-      if(result.annualBasicAverageShares == null)
-        continue;
-      System.out.println(result.annualTotalRevenue);
-    }
+    csvWriter.parseAndWrite(List.of(json), List.of(json2));
+
     System.out.println(y);
   }
 }
