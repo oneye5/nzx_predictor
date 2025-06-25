@@ -6,8 +6,23 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class Result {
+    public static NullValue NULL_VALUE = new NullValue();
+    static {
+        NULL_VALUE.reportedValue = new ReportedValue();
+        NULL_VALUE.asOfDate = "";
+        NULL_VALUE.currencyCode = "NULL";
+        NULL_VALUE.dataId = -1;
+        NULL_VALUE.periodType = "NULL";
+        NULL_VALUE.reportedValue.raw = Double.NaN;
+        NULL_VALUE.reportedValue.fmt = "NaN";
+    }
+
     public List<FinancialFeatureBase> getApplicableInfo(long time) {
         List<FinancialFeatureBase> applicableInfo = new ArrayList<>();
+
+        if(timestamp == null) {
+            return applicableInfo;
+        }
 
         // Find the most recent timestamp that is <= the given time
         int applicableIndex = -1;
@@ -21,6 +36,9 @@ public class Result {
 
         // If no applicable timestamp found, return empty list
         if (applicableIndex == -1) {
+            for(int i = 0; i < 47; i++){ // return equivalent number of null values to maintain data width
+                applicableInfo.add(NULL_VALUE);
+            }
             return applicableInfo;
         }
 
@@ -81,23 +99,14 @@ public class Result {
         if (sourceList != null && index >= 0
                 && index < sourceList.size()
                 && sourceList.get(index) != null
-                && sourceList.get(index) instanceof FinancialFeatureBase) {
+                && sourceList.get(index) instanceof FinancialFeatureBase
+                && sourceList.get(index) != NULL_VALUE) {
 
             Object item = sourceList.get(index);
             result.add((FinancialFeatureBase) item);
         }
         else { // handle missing values
-            var nullVal = new NullValue();
-            nullVal.reportedValue = new ReportedValue();
-            nullVal.asOfDate = "";
-            nullVal.currencyCode = "NULL";
-            nullVal.dataId = -1;
-            nullVal.periodType = "NULL";
-
-            nullVal.reportedValue.raw = Double.NaN;
-            nullVal.reportedValue.fmt = "NaN";
-
-            result.add(nullVal);
+            result.add(NULL_VALUE);
         }
     }
     public Meta meta;

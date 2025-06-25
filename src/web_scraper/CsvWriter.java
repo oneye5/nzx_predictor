@@ -4,6 +4,7 @@ import pojos.yahoo.financials.FinancialInformation;
 import pojos.yahoo.prices.HistoricPriceInformation;
 
 import java.util.List;
+import java.util.Objects;
 
 public class CsvWriter {
   public void parseAndWrite(List<HistoricPriceInformation> historicPrices, List<FinancialInformation> financialInformation) {
@@ -31,6 +32,16 @@ public class CsvWriter {
     System.out.println(builder);
   }
   private void writeTickerInfoToBuffer(StringBuilder b, HistoricPriceInformation prices, FinancialInformation financialInformation) {
+    if(prices == null || prices.chart == null
+            || prices.chart.result == null
+            || prices.chart.result.isEmpty()
+            || prices.chart.result.getFirst().indicators == null
+            || prices.chart.result.getFirst().indicators.adjclose.size() == 0
+            || prices.chart.result.getFirst().indicators.adjclose.getFirst().adjclose.size() == 0
+            || prices.chart.result.getFirst().indicators.adjclose.getFirst().adjclose.stream().anyMatch(Objects::isNull)
+    )
+      return;
+
     for(int i = 0; i < prices.chart.result.getFirst().timestamp.size(); i++){
       String ticker = prices.chart.result.getFirst().meta.symbol;
       double price = prices.chart.result.getFirst().indicators.adjclose.getFirst().adjclose.get(i);
@@ -47,6 +58,7 @@ public class CsvWriter {
 
       // append financial features, fill out missing data flags
       StringBuilder missingData = new StringBuilder();
+
       financialFeatures.forEach(item -> {
         double value = item.reportedValue.raw;
 
@@ -62,7 +74,11 @@ public class CsvWriter {
       // append missing feature flags
       b.append(missingData);
 
-      b.append(financialFeatures.get(0).currencyCode);
+      if (financialFeatures.size() != 0)
+        b.append(financialFeatures.getFirst().currencyCode);
+      else
+        b.append("NZD");
+
       b.append("\n");
     }
   }
