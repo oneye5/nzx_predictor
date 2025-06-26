@@ -2,7 +2,7 @@ package web_scraper;
 
 public class Tickers {
   public static final String[] TICKERS = {
-          "2CC2", "AFCA", "AFI", "AFT", "AGG", "AGL", "AIA", "AIR", "ALF", "ANZ",
+          "ANZ", "AFCA", "AFI", "AFT", "AGG", "AGL", "AIA", "AIR", "ALF", "2CC2",
           "AOF", "APA", "APL", "ARB", "ARG", "ASD", "ASF", "ASP", "ASR", "ATM",
           "AUE", "AUS", "BAI", "BFG", "BGP", "BIF", "BIT", "BLT", "BOT", "BPG",
           "BRM", "BRW", "BTC", "CCC", "CDI", "CEN", "CHI", "CMO", "CNU", "CO2",

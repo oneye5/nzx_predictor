@@ -18,11 +18,12 @@ public class Main {
 
     Gson gson = new Gson();
 
+
+
     Arrays.stream(Tickers.TICKERS)
             .parallel()
             .forEach(t -> {
               String tickerFull = t + ".NZ";
-
               try
               {
                 String histHtml = HtmlGetter.get(ApiUrls.getHistoricPricesUrl(tickerFull));

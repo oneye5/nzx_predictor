@@ -1,13 +1,23 @@
 package web_scraper;
 
+import pojos.yahoo.financials.FinancialFeatureBase;
 import pojos.yahoo.financials.FinancialInformation;
+import pojos.yahoo.financials.Result;
 import pojos.yahoo.prices.HistoricPriceInformation;
 
+import java.io.BufferedWriter;
+import java.io.File;
+import java.io.FileWriter;
+import java.io.IOException;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 
 public class CsvWriter {
+  int expectedFinancialFeatures = 0;
   public void parseAndWrite(List<HistoricPriceInformation> historicPrices, List<FinancialInformation> financialInformation) {
+    expectedFinancialFeatures = getFinancialFeatureCount(financialInformation);
+
     financialInformation.forEach(f -> f.timeseries.preprocessResults());
     StringBuilder builder = new StringBuilder();
 
@@ -16,7 +26,35 @@ public class CsvWriter {
     builder.append("Price"); builder.append(",");
     builder.append("Time"); builder.append(",");
 
-    var dataPoints = financialInformation.getFirst().timeseries.result.getFirst().getApplicableInfo(Long.MAX_VALUE);
+    // for each feature, check if data contains feature, and populate data points with it
+    // otherwise populate with null value
+    List<FinancialFeatureBase> dataPoints = new ArrayList<>();
+    for(int i = 0; i < expectedFinancialFeatures; i++) {
+      boolean found = false; // has found a valid data point?
+
+      for(var f : financialInformation) { // for each set of financial info
+        try{
+          var items = f.timeseries.result.getFirst().getApplicableInfo(Long.MAX_VALUE);
+
+          if (items.size() != expectedFinancialFeatures)
+            continue;
+
+          if (items.get(i) != Result.NULL_VALUE) {
+            // data point found, add to list and break
+            dataPoints.add(items.get(i));
+            found = true;
+            break;
+          }
+        }
+        catch (Exception e) {continue;}
+      }
+
+      // if no valid data point exists, populate with a null value to ensure alignment
+      if (!found) {
+        dataPoints.add(Result.NULL_VALUE);
+      }
+    }
+
     StringBuilder missing = new StringBuilder();
     for (var x : dataPoints){
       builder.append(x.getFeatureType()); builder.append(",");
@@ -29,8 +67,18 @@ public class CsvWriter {
     for (int i = 0; i < historicPrices.size(); i++) {
       writeTickerInfoToBuffer(builder, historicPrices.get(i), financialInformation.get(i));
     }
-    System.out.println(builder);
+
+    // write to file
+    File file = new File("data.csv");
+    try(FileWriter fw = new FileWriter(file);
+        BufferedWriter bw = new BufferedWriter(fw)){
+      bw.write(builder.toString());
+      bw.flush();
+      System.out.println("CSV written");
+    }
+    catch (IOException e) {System.out.println(e.getMessage());}
   }
+  
   private void writeTickerInfoToBuffer(StringBuilder b, HistoricPriceInformation prices, FinancialInformation financialInformation) {
     if(prices == null || prices.chart == null
             || prices.chart.result == null
@@ -49,6 +97,14 @@ public class CsvWriter {
 
       // select most recent financial information to add for each metric
       var financialFeatures = financialInformation.timeseries.result.getFirst().getApplicableInfo(time);
+
+      if(financialFeatures.size() != expectedFinancialFeatures) {
+        //populate with null values to maintain alignment
+        financialFeatures = new ArrayList<>();
+        for (int k = 0; k < expectedFinancialFeatures; k++) {
+          financialFeatures.add(Result.NULL_VALUE);
+        }
+      }
 
       // append information
       b.append(ticker); b.append(",");
@@ -81,5 +137,15 @@ public class CsvWriter {
 
       b.append("\n");
     }
+  }
+
+  private int getFinancialFeatureCount(List<FinancialInformation> f) {
+    int max = 0;
+    for (var x : f) {
+      var c = x.timeseries.result.getFirst().getApplicableInfo(Long.MAX_VALUE).size();
+      if (c > max)
+        max = c;
+    }
+    return max;
   }
 }
