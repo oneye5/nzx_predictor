@@ -17,9 +17,6 @@ public class Main {
     List<FinancialInformation> financials = Collections.synchronizedList(new ArrayList<>());
 
     Gson gson = new Gson();
-
-
-
     Arrays.stream(Tickers.TICKERS)
             .parallel()
             .forEach(t -> {

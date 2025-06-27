@@ -4,6 +4,8 @@ import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
@@ -19,6 +21,7 @@ import pojos.yahoo.prices.HistoricPriceInformation;
  * @author Owan Lazic
  */
 public class CsvWriter {
+  String filePath = null;
   int expectedFinancialFeatures = 0;
 
   /**
@@ -27,6 +30,7 @@ public class CsvWriter {
    * header
    * Ticker, Time, Price, financial information, missing data flags, currency
    * Where each row represents the state of one ticker at a given point in time.
+   * The file is saved to the same directory as this file.
    */
   public void parseAndWrite(List<HistoricPriceInformation> historicPrices,
                             List<FinancialInformation> financialInformation) {
@@ -92,13 +96,16 @@ public class CsvWriter {
     }
 
     // write to file
-    File file = new File("data.csv");
-    try (FileWriter fw = new FileWriter(file);
-        BufferedWriter bw = new BufferedWriter(fw)) {
+    try {
+      File file = new File("data.csv");
+      FileWriter fw = new FileWriter(file);
+      BufferedWriter bw = new BufferedWriter(fw);
       bw.write(builder.toString());
       bw.flush();
-      System.out.println("CSV written");
-    } catch (IOException e) {
+      filePath = Paths.get("data.csv").toAbsolutePath().toString();
+
+      System.out.println("CSV written to " + filePath);
+    } catch (Exception e) {
       System.out.println(e.getMessage());
     }
   }
