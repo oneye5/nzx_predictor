@@ -10,13 +10,11 @@ public class ApiUrls {
   public static String getHistoricPricesUrl(String ticker){
     String x = HISTORIC_PRICES;
     x = x.replace("{TICKER}", ticker);
-    System.out.println(x);
     return x;
   }
   public static String getFinancialInformationUrl(String ticker){
     String x = FINANCIAL_INFORMATION;
     x = x.replace("{TICKER}", ticker);
-    System.out.println(x);
     return x;
   }
 

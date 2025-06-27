@@ -201,4 +201,8 @@ public class CsvWriter {
     }
     return max;
   }
+
+  public String getFilePath() {
+    return filePath;
+  }
 }

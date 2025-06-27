@@ -21,6 +21,7 @@ public class Main {
             .parallel()
             .forEach(t -> {
               String tickerFull = t + ".NZ";
+              System.out.println("Getting ticker information: " + tickerFull);
               try
               {
                 String histHtml = HtmlGetter.get(ApiUrls.getHistoricPricesUrl(tickerFull));
