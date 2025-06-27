@@ -1,5 +1,11 @@
 package web_scraper;
 
+/**
+ * This class contains the lengthy API URL's
+ * as well as functionality for getting them with specified tickers.
+ *
+ * @author Owan Laizc
+ */
 public class ApiUrls {
   public static String getHistoricPricesUrl(String ticker){
     String x = HISTORIC_PRICES;

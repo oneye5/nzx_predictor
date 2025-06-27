@@ -1,5 +1,10 @@
 package web_scraper;
 
+/**
+ * Contains a list of NZX listed tickers.
+ *
+ * @author Owan Lazic
+ */
 public class Tickers {
   public static final String[] TICKERS = {
           "ANZ", "AFCA", "AFI", "AFT", "AGG", "AGL", "AIA", "AIR", "ALF", "2CC2",
@@ -18,6 +23,4 @@ public class Tickers {
           "RYM", "SAN", "SCL", "SCT", "SDL", "SEK", "SKC", "SKL", "SKO", "SKT",
           "SMI", "SML", "SPG", "SPK", "SPN", "SPY", "STU", "SUM", "SVR", "TAH"
   };
-
-
 }

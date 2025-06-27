@@ -4,8 +4,17 @@ import java.net.http.HttpClient;
 import java.net.http.HttpRequest;
 import java.net.http.HttpResponse;
 
+/**
+ * Helper class used for creating web requests and getting their results in string form.
+ *
+ * @author Owan Lazic
+ */
 public class HtmlGetter
 {
+  /**
+   * Makes a request to an url using plausible request headers, as to not be blocked.
+   * Returns the Html content of the request reply.
+   */
   public static String get(String url)
   {
     try
