@@ -88,7 +88,6 @@ public class CsvWriter {
       missing.append("MissingFlag,");
     }
     builder.append(missing);
-    builder.append("Currency");
     builder.append("\n");
     // fill data for each ticker
     for (int i = 0; i < historicPrices.size(); i++) {
@@ -177,13 +176,9 @@ public class CsvWriter {
         }
       });
       // append missing feature flags
-      b.append(missingData);
+      missingData.delete(missingData.length()-1,missingData.length()); // remove trailing comma
 
-      if (financialFeatures.size() != 0) {
-        b.append(financialFeatures.getFirst().currencyCode);
-      } else {
-        b.append("NZD");
-      }
+      b.append(missingData);
       b.append("\n");
     }
   }
