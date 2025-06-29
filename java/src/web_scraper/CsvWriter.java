@@ -49,6 +49,9 @@ public class CsvWriter {
     builder.append("Time");
     builder.append(",");
 
+    builder.append("Volume");
+    builder.append(",");
+
     // for each feature, check if data contains feature, and populate data points with it
     // otherwise populate with null value
     List<FinancialFeatureBase> dataPoints = new ArrayList<>();
@@ -159,6 +162,12 @@ public class CsvWriter {
       b.append(time);
       b.append(",");
 
+      // append additional info
+      var volume = prices.chart.result.getFirst().indicators.quote.getFirst().volume.get(i);
+
+      b.append(volume);
+      b.append(",");
+
       // append financial features, fill out missing data flags
       StringBuilder missingData = new StringBuilder();
 
@@ -176,7 +185,10 @@ public class CsvWriter {
         }
       });
       // append missing feature flags
-      missingData.delete(missingData.length()-1,missingData.length()); // remove trailing comma
+      if (!missingData.isEmpty()) {
+        missingData.delete(missingData.length()-1,missingData.length()); // remove trailing comma
+      }
+
 
       b.append(missingData);
       b.append("\n");

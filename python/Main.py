@@ -10,13 +10,14 @@ from sklearn.metrics import mean_squared_error, r2_score
 
 
 from NZX_scraper.python.DataProcessing import load_data, generate_labels, print_sample_data, preprocess_data
+from NZX_scraper.python.Learner import train_and_evaluate
 
 
 def main():
     parser = argparse.ArgumentParser(description='Process financial data and generate price labels')
     parser.add_argument('csv_file', nargs='?', default='C:/Users/ocjla/Desktop/Projects/NZX_scraper/NZX_scraper_jb/data.csv',
                         help='Path to CSV file')
-    parser.add_argument('--lookahead', type=int, default=300,
+    parser.add_argument('--lookahead', type=int, default=700,
                         help='Days to look ahead for labels (default: 30)')
 
     args = parser.parse_args()
@@ -31,7 +32,10 @@ def main():
     data = preprocess_data(data)
 
     print_sample_data(data)
-    print("done")
+    print("done preprocessing, starting training...")
+
+    train_and_evaluate(data, label_col='Price_Change', test_size=0.3)
+
 
 if __name__ == "__main__":
     main()
