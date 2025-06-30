@@ -11,7 +11,9 @@ else:
     keyword = "New Zealand Rural Land Company"  # default for testing
 
 pytrends = TrendReq(hl='en-US', tz=360)
+
 pytrends.build_payload([keyword], timeframe='today 5-y', geo='NZ')
+
 df = pytrends.interest_over_time()
 
 if not df.empty:

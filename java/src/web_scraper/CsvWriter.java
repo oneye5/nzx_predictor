@@ -7,6 +7,7 @@ import java.io.IOException;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.List;
 import java.util.Objects;
 
@@ -51,7 +52,7 @@ public class CsvWriter {
 
     // fill data for each ticker
     for (int i = 0; i < historicPrices.size(); i++) {
-      writeTickerInfoToBuffer(builder, historicPrices.get(i), financialInformation.get(i));
+      writeTickerInfoToBuffer(builder, data, i);
     }
 
     // write to file
@@ -129,15 +130,21 @@ public class CsvWriter {
       missing.append("MissingFlag,");
     }
     builder.append(missing);
+
+    builder.append("gTrendsCompanyName,");
+    builder.append("MissingFlag");
+
     builder.append("\n");
   }
 
   /**
    * Helper method that writes rows belonging to a single ticker, to the StringBuilder.
    */
-  private void writeTickerInfoToBuffer(StringBuilder b,
-                                       HistoricPriceInformation prices,
-                                       FinancialInformation financialInformation) {
+  private void writeTickerInfoToBuffer(StringBuilder b, AllData data, int index) {
+    var prices = data.priceInformation().get(index);
+    var financialInformation = data.financialInformation().get(index);
+    var gTrendsCompanyName = data.gTrendsCompanyName().get(index);
+
     if (prices == null || prices.chart == null
             || prices.chart.result == null
             || prices.chart.result.isEmpty()
@@ -205,13 +212,23 @@ public class CsvWriter {
         }
       });
       // append missing feature flags
-      if (!missingData.isEmpty()) {
-        missingData.delete(missingData.length()-1,missingData.length()); // remove trailing comma
+      b.append(missingData);
+
+      // add google trends data
+      Pair<Long, Float> gTrendsCompanyNameApplicable = null;
+      if (gTrendsCompanyName != null) {
+        gTrendsCompanyNameApplicable = gTrendsCompanyName.stream()
+                .filter(item -> item.x() <= time) // include equal timestamps
+                .max(Comparator.comparingLong(Pair::x))
+                .orElse(null);
       }
 
-
-      b.append(missingData);
-      b.append("\n");
+      if (gTrendsCompanyNameApplicable == null) {
+        b.append(-0.0f).append(",").append(0); // missing flag
+      } else {
+        b.append(gTrendsCompanyNameApplicable.y()).append(",").append(1); // valid flag
+      }
+      b.append(",\n");
     }
   }
 

@@ -69,7 +69,7 @@ public class Scraper {
     }
 
     // Wait for completion
-    process.waitFor(5, TimeUnit.SECONDS);
+    process.waitFor(30, TimeUnit.SECONDS);
 
     if (process.exitValue() != 0) {
       throw new RuntimeException("Python script failed for '" + companyShortName + "'");
