@@ -36,15 +36,46 @@ public class CsvWriter {
    * The file is saved to the same directory as this file.
    */
   public void parseAndWrite(AllData data) {
+    StringBuilder builder = new StringBuilder(); // all data is written to this buffer
+
     // 'unpack' AllData into individual lists
     List<HistoricPriceInformation> historicPrices = data.priceInformation();
     List<FinancialInformation> financialInformation = data.financialInformation();
     List<List<Pair<Long,Float>>> gTrendsCompanyName = data.gTrendsCompanyName();
 
+    // needed pre-processing steps
     expectedFinancialFeatures = getFinancialFeatureCount(financialInformation);
-
     financialInformation.forEach(f -> f.timeseries.preprocessResults());
-    StringBuilder builder = new StringBuilder();
+
+    writeHeaders(data, builder);
+
+    // fill data for each ticker
+    for (int i = 0; i < historicPrices.size(); i++) {
+      writeTickerInfoToBuffer(builder, historicPrices.get(i), financialInformation.get(i));
+    }
+
+    // write to file
+    writeStrToCsv(builder);
+  }
+
+  private void writeStrToCsv(StringBuilder builder){
+    try {
+      File file = new File("data.csv");
+      FileWriter fw = new FileWriter(file);
+      BufferedWriter bw = new BufferedWriter(fw);
+      bw.write(builder.toString());
+      bw.flush();
+      filePath = Paths.get("data.csv").toAbsolutePath().toString();
+
+      System.out.println("CSV written to " + filePath);
+    } catch (Exception e) {
+      System.out.println(e.getMessage());
+    }
+  }
+
+  private void writeHeaders(AllData data, StringBuilder builder) {
+    List<HistoricPriceInformation> historicPrices = data.priceInformation();
+    List<FinancialInformation> financialInformation = data.financialInformation();
 
     // build header
     builder.append("Ticker");
@@ -99,24 +130,6 @@ public class CsvWriter {
     }
     builder.append(missing);
     builder.append("\n");
-    // fill data for each ticker
-    for (int i = 0; i < historicPrices.size(); i++) {
-      writeTickerInfoToBuffer(builder, historicPrices.get(i), financialInformation.get(i));
-    }
-
-    // write to file
-    try {
-      File file = new File("data.csv");
-      FileWriter fw = new FileWriter(file);
-      BufferedWriter bw = new BufferedWriter(fw);
-      bw.write(builder.toString());
-      bw.flush();
-      filePath = Paths.get("data.csv").toAbsolutePath().toString();
-
-      System.out.println("CSV written to " + filePath);
-    } catch (Exception e) {
-      System.out.println(e.getMessage());
-    }
   }
 
   /**
