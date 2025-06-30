@@ -9,6 +9,9 @@ import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
+
+import misc.AllData;
+import misc.Pair;
 import pojos.yahoo.financials.FinancialFeatureBase;
 import pojos.yahoo.financials.FinancialInformation;
 import pojos.yahoo.financials.Result;
@@ -32,8 +35,12 @@ public class CsvWriter {
    * Where each row represents the state of one ticker at a given point in time.
    * The file is saved to the same directory as this file.
    */
-  public void parseAndWrite(List<HistoricPriceInformation> historicPrices,
-                            List<FinancialInformation> financialInformation) {
+  public void parseAndWrite(AllData data) {
+    // 'unpack' AllData into individual lists
+    List<HistoricPriceInformation> historicPrices = data.priceInformation();
+    List<FinancialInformation> financialInformation = data.financialInformation();
+    List<List<Pair<Long,Float>>> gTrendsCompanyName = data.gTrendsCompanyName();
+
     expectedFinancialFeatures = getFinancialFeatureCount(financialInformation);
 
     financialInformation.forEach(f -> f.timeseries.preprocessResults());
