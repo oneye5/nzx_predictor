@@ -140,7 +140,7 @@ public class CsvWriter {
     builder.append("MissingFlag,");
     builder.append("MissingFlag,");
     builder.append("MissingFlag,");
-    builder.append("MissingFlag,");
+    builder.append("MissingFlag");
 
     builder.append("\n");
   }
@@ -256,7 +256,9 @@ public class CsvWriter {
       }
       b.append(cpiMissingData);
 
-      b.append(",\n");
+      // remove trailing comma
+      b.delete(b.length() - 1, b.length());
+      b.append("\n");
     }
   }
 

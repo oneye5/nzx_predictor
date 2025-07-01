@@ -8,7 +8,7 @@ def load_data(csv_file):
     """Load data from CSV file."""
     try:
         data = pd.read_csv(csv_file)
-        return data.sort_values(['Ticker', 'Time']).reset_index(drop=True)
+        return data
     except FileNotFoundError:
         print(f"Error: File '{csv_file}' not found.")
         sys.exit(1)
@@ -16,41 +16,71 @@ def load_data(csv_file):
         print(f"Error loading file: {e}")
         sys.exit(1)
 
+def sort_by_timestamp(data):
+    """Sort data by timestamp."""
+    return data.sort_values(by=['Time'], ascending=True)
 
-def generate_labels(data, lookahead_days):
+def drop_constant_columns(df: pd.DataFrame) -> pd.DataFrame:
     """
-    Generate future price labels for the data.
-    Only creates labels when sufficient future data exists.
+    Remove any column in df that has only a single unique value.
+    Returns a new DataFrame with only the columns that vary.
     """
-    #df['Future_Price'] = np.nan
-    data['Price_Change'] = np.nan
+    # Compute number of unique values per column
+    unique_counts = df.nunique(dropna=False)
+    # Keep only columns where there's more than one unique value
+    cols_to_keep = unique_counts[unique_counts > 1].index
+    return df[cols_to_keep]
 
-    # Convert lookahead days to seconds
-    lookahead_seconds = lookahead_days * 24 * 60 * 60
+def generate_labels(df: pd.DataFrame, lookahead_days: int) -> pd.DataFrame:
+    """
+    Fast label generation by doing an as-of merge _per ticker_.
+    For each ticker group:
+      - sort by Time
+      - compute TargetTime = Time + lookahead_seconds
+      - merge_asof on that group only
+    Drops any rows where no future price exists.
+    """
+    lookahead_sec = lookahead_days * 24 * 60 * 60
+    results = []
 
     # Process each ticker separately
-    for ticker in data['Ticker'].unique():
-        ticker_data = data[data['Ticker'] == ticker].copy()
+    for ticker, grp in df.groupby('Ticker', sort=False):
+        # 1) sort by Time
+        grp = grp.sort_values('Time').copy()
+        # 2) compute look-ahead target
+        grp['TargetTime'] = grp['Time'] + lookahead_sec
 
-        for i, row in ticker_data.iterrows():
-            current_time = row['Time']
-            current_price = row['Price']
-            target_time = current_time + lookahead_seconds
+        # 3) build the future frame for this ticker
+        future = (
+            grp[['Time', 'Price']]
+            .rename(columns={'Time':'FutureTime', 'Price':'FuturePrice'})
+            .sort_values('FutureTime')
+        )
 
-            # Find future price data
-            future_data = ticker_data[ticker_data['Time'] >= target_time]
+        # 4) as-of merge within this ticker
+        merged = pd.merge_asof(
+            left=grp.sort_values('TargetTime'),
+            right=future,
+            left_on='TargetTime',
+            right_on='FutureTime',
+            direction='forward',
+            allow_exact_matches=True
+        )
 
-            if not future_data.empty:
-                future_price = future_data.iloc[0]['Price']
-                price_change = future_price - current_price
+        # 5) compute percent change
+        merged['Price_Change'] = (merged['FuturePrice'] - merged['Price']) / merged['Price']
 
-                data.loc[i, 'Price_Change'] = price_change
+        results.append(merged)
 
-    # Return only rows with labels
-    labeled_data = data.dropna(subset=['Price_Change'])
-    print(f"Generated labels for {len(labeled_data)} out of {len(data)} rows")
+    # 6) combine all tickers and drop unlabeled rows
+    combined = pd.concat(results, ignore_index=True)
+    labeled = combined.dropna(subset=['Price_Change'])
 
-    return labeled_data
+    # 7) clean up helper columns
+    return labeled.drop(columns=['TargetTime', 'FutureTime', 'FuturePrice'])
+
+
+
 
 def print_sample_data(data, n_rows=5):
     """Print first few rows to see what the data looks like."""
@@ -110,12 +140,14 @@ def preprocess_data(data):
         raise ValueError("Missing 'Price_Change' column")
 
     label = data[label_col]
-    data = data.drop(columns=[label_col])
+
+    # drop useless columns
+    data = drop_constant_columns(data)
+    data = data.drop(columns=["short-termInterestRate"])
 
     # Identify binary vs continuous features
     binary_cols = data.columns[data.nunique() == 2]
     continuous_cols = [col for col in data.columns if col not in binary_cols]
-
     # Scale only continuous features
     scaler = RobustScaler()
     data[continuous_cols] = scaler.fit_transform(data[continuous_cols])
