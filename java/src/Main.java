@@ -1,8 +1,5 @@
-import misc.Pair;
 import web_scraper.*;
 
-import java.util.ArrayList;
-import java.util.List;
 
 public class Main {
   public static void main(String[] args) {

@@ -3,8 +3,6 @@ package web_scraper;
 import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileWriter;
-import java.io.IOException;
-import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.Comparator;
@@ -12,6 +10,7 @@ import java.util.List;
 import java.util.Objects;
 
 import misc.AllData;
+import misc.CpiNz;
 import misc.Pair;
 import pojos.yahoo.financials.FinancialFeatureBase;
 import pojos.yahoo.financials.FinancialInformation;
@@ -132,7 +131,16 @@ public class CsvWriter {
     builder.append(missing);
 
     builder.append("gTrendsCompanyName,");
-    builder.append("MissingFlag");
+    builder.append("MissingFlag,");
+
+    builder.append("long-termInterestRate,");
+    builder.append("short-termInterestRate,");
+    builder.append("immediate-termInterestRate,");
+    builder.append("exchangeRateinterestRate,");
+    builder.append("MissingFlag,");
+    builder.append("MissingFlag,");
+    builder.append("MissingFlag,");
+    builder.append("MissingFlag,");
 
     builder.append("\n");
   }
@@ -228,9 +236,31 @@ public class CsvWriter {
       } else {
         b.append(gTrendsCompanyNameApplicable.y()).append(",").append(1); // valid flag
       }
+      b.append(",");
+
+      // add NZ CPI info
+      var cpi = data.cpiNz().getMostRecentData(time);
+
+      if (cpi == null) {
+        cpi = new double[]{0, 0, 0, 0};
+      }
+      var cpiMissingData = new StringBuilder();
+      for (double val : cpi) {
+        if (val == 0.0) {
+          cpiMissingData.append("0,");
+          b.append("-0,");
+        } else {
+          b.append(val).append(",");
+          cpiMissingData.append("1,");
+        }
+      }
+      b.append(cpiMissingData);
+
       b.append(",\n");
     }
   }
+
+
 
   /**
    * Finds the maximum number of financial features.

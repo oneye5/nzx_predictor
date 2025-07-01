@@ -22,16 +22,15 @@ def generate_labels(data, lookahead_days):
     Generate future price labels for the data.
     Only creates labels when sufficient future data exists.
     """
-    df = data.copy()
     #df['Future_Price'] = np.nan
-    df['Price_Change'] = np.nan
+    data['Price_Change'] = np.nan
 
     # Convert lookahead days to seconds
     lookahead_seconds = lookahead_days * 24 * 60 * 60
 
     # Process each ticker separately
-    for ticker in df['Ticker'].unique():
-        ticker_data = df[df['Ticker'] == ticker].copy()
+    for ticker in data['Ticker'].unique():
+        ticker_data = data[data['Ticker'] == ticker].copy()
 
         for i, row in ticker_data.iterrows():
             current_time = row['Time']
@@ -45,12 +44,11 @@ def generate_labels(data, lookahead_days):
                 future_price = future_data.iloc[0]['Price']
                 price_change = future_price - current_price
 
-                #df.loc[i, 'Future_Price'] = future_price
-                df.loc[i, 'Price_Change'] = price_change
+                data.loc[i, 'Price_Change'] = price_change
 
     # Return only rows with labels
-    labeled_data = df.dropna(subset=['Price_Change'])
-    print(f"Generated labels for {len(labeled_data)} out of {len(df)} rows")
+    labeled_data = data.dropna(subset=['Price_Change'])
+    print(f"Generated labels for {len(labeled_data)} out of {len(data)} rows")
 
     return labeled_data
 
@@ -60,7 +58,6 @@ def print_sample_data(data, n_rows=5):
     print("=" * 80)
     print(data.head(n_rows).to_string())
     print(f"\nData shape: {data.shape}")
-    print(f"Columns: {list(data.columns)}")
 
 def add_engineered_features(data):
     # Add ratios, because relativity between features is lost after scaling, so having explicit ratios

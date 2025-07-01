@@ -8,17 +8,16 @@ from sklearn.neural_network import MLPRegressor
 from sklearn.preprocessing import StandardScaler
 from sklearn.metrics import mean_squared_error, r2_score
 
-
-from NZX_scraper.python.DataProcessing import load_data, generate_labels, print_sample_data, preprocess_data, \
-    add_engineered_features
-from NZX_scraper.python.Learner import train_and_evaluate
+from NZX_scraper.python.ml_and_preprocess.DataProcessing import add_engineered_features, print_sample_data, load_data, \
+    generate_labels, preprocess_data
+from NZX_scraper.python.ml_and_preprocess.Learner import train_and_evaluate
 
 
 def main():
     parser = argparse.ArgumentParser(description='Process financial data and generate price labels')
     parser.add_argument('csv_file', nargs='?', default='C:/Users/ocjla/Desktop/Projects/NZX_scraper/NZX_scraper_jb/data.csv',
                         help='Path to CSV file')
-    parser.add_argument('--lookahead', type=int, default=700,
+    parser.add_argument('--lookahead', type=int, default=300,
                         help='Days to look ahead for labels (default: 30)')
 
     args = parser.parse_args()

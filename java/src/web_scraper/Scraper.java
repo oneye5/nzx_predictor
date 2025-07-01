@@ -2,8 +2,10 @@ package web_scraper;
 
 import com.google.gson.Gson;
 import misc.AllData;
+import misc.CpiNz;
 import misc.Pair;
 import misc.Triplet;
+import pojos.oecd.cpi_nz.SdmxResponse;
 import pojos.yahoo.financials.FinancialInformation;
 import pojos.yahoo.prices.HistoricPriceInformation;
 
@@ -52,7 +54,11 @@ public class Scraper {
       }
     });
 
-    return new AllData(historicPrices, financials, gTrendsCompanyName);
+    System.out.println("Getting nz CPI");
+    var nzCpiHtml = HtmlGetter.get(ApiUrls.getNzCpi());
+    var nzCpiRaw = gson.fromJson(nzCpiHtml, SdmxResponse.class);
+    var nzCpi = CpiNz.getFromRaw(nzCpiRaw);
+    return new AllData(historicPrices, financials, gTrendsCompanyName, nzCpi);
   }
 
   public static List<Pair<Long,Float>> getGTrendsData(String companyShortName) throws IOException, InterruptedException {
