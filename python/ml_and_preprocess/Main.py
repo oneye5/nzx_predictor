@@ -9,7 +9,7 @@ from sklearn.preprocessing import StandardScaler
 from sklearn.metrics import mean_squared_error, r2_score
 
 from NZX_scraper.python.ml_and_preprocess.DataProcessing import add_engineered_features, print_sample_data, load_data, \
-    generate_labels, preprocess_data
+    generate_labels, preprocess_data, drop_columns
 from NZX_scraper.python.ml_and_preprocess.Learner import train_and_evaluate
 
 
@@ -31,6 +31,8 @@ def main():
     print("Adding engineered features")
     data = add_engineered_features(data)
     print_sample_data(data)
+
+    data = drop_columns(data)
 
     print("Adding labels")
     data = generate_labels(data, args.lookahead)
