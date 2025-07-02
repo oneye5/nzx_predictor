@@ -9,7 +9,7 @@ from sklearn.preprocessing import StandardScaler
 from sklearn.metrics import mean_squared_error, r2_score
 
 from NZX_scraper.python.ml_and_preprocess.DataProcessing import add_engineered_features, print_sample_data, load_data, \
-    generate_labels, preprocess_data, sort_by_timestamp
+    generate_labels, preprocess_data
 from NZX_scraper.python.ml_and_preprocess.Learner import train_and_evaluate
 
 
@@ -17,8 +17,8 @@ def main():
     parser = argparse.ArgumentParser(description='Process financial data and generate price labels')
     parser.add_argument('csv_file', nargs='?', default='C:/Users/ocjla/Desktop/Projects/NZX_scraper/NZX_scraper_jb/data.csv',
                         help='Path to CSV file')
-    parser.add_argument('--lookahead', type=int, default=600,
-                        help='Days to look ahead for labels (default: 30)')
+    parser.add_argument('--lookahead', type=int, default=700,
+                        help='Days to look ahead for labels')
 
     args = parser.parse_args()
 
@@ -27,18 +27,14 @@ def main():
     data = load_data(args.csv_file)
     print(f"Loaded {len(data)} rows")
 
-    print("sorting by timestamp")
-    data = sort_by_timestamp(data)
-
-    print("Adding labels")
-    data = generate_labels(data, args.lookahead)
-    print_sample_data(data)
-
     # modify data
     print("Adding engineered features")
     data = add_engineered_features(data)
     print_sample_data(data)
 
+    print("Adding labels")
+    data = generate_labels(data, args.lookahead)
+    print_sample_data(data)
 
     print("Pre-processing data & scaling")
     data = preprocess_data(data)

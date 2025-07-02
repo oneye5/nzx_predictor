@@ -4,10 +4,7 @@ import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileWriter;
 import java.nio.file.Paths;
-import java.util.ArrayList;
-import java.util.Comparator;
-import java.util.List;
-import java.util.Objects;
+import java.util.*;
 
 import misc.AllData;
 import misc.CpiNz;
@@ -134,12 +131,12 @@ public class CsvWriter {
     builder.append("MissingFlag,");
 
     builder.append("long-termInterestRate,");
+    builder.append("MissingFlag,");
     builder.append("short-termInterestRate,");
+    builder.append("MissingFlag,");
     builder.append("immediate-termInterestRate,");
+    builder.append("MissingFlag,");
     builder.append("exchangeRateinterestRate,");
-    builder.append("MissingFlag,");
-    builder.append("MissingFlag,");
-    builder.append("MissingFlag,");
     builder.append("MissingFlag");
 
     builder.append("\n");
@@ -153,6 +150,7 @@ public class CsvWriter {
     var financialInformation = data.financialInformation().get(index);
     var gTrendsCompanyName = data.gTrendsCompanyName().get(index);
 
+    // check for invalid data ====================================================
     if (prices == null || prices.chart == null
             || prices.chart.result == null
             || prices.chart.result.isEmpty()
@@ -166,6 +164,7 @@ public class CsvWriter {
       return;
     }
 
+    // pre-process financial features
     for (int i = 0; i < prices.chart.result.getFirst().timestamp.size(); i++) {
       long time = prices.chart.result.getFirst().timestamp.get(i);
 
@@ -203,7 +202,7 @@ public class CsvWriter {
       b.append(volume);
       b.append(",");
 
-      // append financial features, fill out missing data flags
+      // append financial features, fill out missing data flags =======================================================
       StringBuilder missingData = new StringBuilder();
 
       financialFeatures.forEach(item -> {
@@ -222,7 +221,7 @@ public class CsvWriter {
       // append missing feature flags
       b.append(missingData);
 
-      // add google trends data
+      // add google trends data =====================================================================================
       Pair<Long, Float> gTrendsCompanyNameApplicable = null;
       if (gTrendsCompanyName != null) {
         gTrendsCompanyNameApplicable = gTrendsCompanyName.stream()
@@ -238,23 +237,31 @@ public class CsvWriter {
       }
       b.append(",");
 
-      // add NZ CPI info
-      var cpi = data.cpiNz().getMostRecentData(time);
+      // add NZ CPI info ====================================================================
+      var cpiMap = data.cpiNz().timeSeriesData;
+      // split map into 4 maps for use in TimeSeriesInterpolator
+      Map<Long,Double> cpi1 = new HashMap<>();
+      Map<Long,Double> cpi2 = new HashMap<>();
+      Map<Long,Double> cpi3 = new HashMap<>();
+      Map<Long,Double> cpi4 = new HashMap<>();
 
-      if (cpi == null) {
-        cpi = new double[]{0, 0, 0, 0};
-      }
-      var cpiMissingData = new StringBuilder();
-      for (double val : cpi) {
-        if (val == 0.0) {
-          cpiMissingData.append("0,");
-          b.append("-0,");
-        } else {
-          b.append(val).append(",");
-          cpiMissingData.append("1,");
-        }
-      }
-      b.append(cpiMissingData);
+      cpiMap.keySet().forEach(key->{
+        cpi1.put(key,cpiMap.get(key)[0]);
+        cpi2.put(key,cpiMap.get(key)[1]);
+        cpi3.put(key,cpiMap.get(key)[2]);
+        cpi4.put(key,cpiMap.get(key)[3]);
+      });
+
+      // Get interpolated values
+      var r1 = TimeSeriesInterpolator.getInterpMostRecent(cpi1.keySet(), cpi1::get, time,(v)->!v.equals(0.0));
+      var r2 = TimeSeriesInterpolator.getInterpMostRecent(cpi2.keySet(), cpi2::get, time,(v)->!v.equals(0.0));
+      var r3 = TimeSeriesInterpolator.getInterpMostRecent(cpi3.keySet(), cpi3::get, time,(v)->!v.equals(0.0));
+      var r4 = TimeSeriesInterpolator.getInterpMostRecent(cpi4.keySet(), cpi4::get, time,(v)->!v.equals(0.0));
+      List.of(r1,r2,r3,r4).forEach(item->{
+				item.ifPresentOrElse(
+                number -> b.append(number).append(",1,"),
+                ()->b.append("-0.0,0,"));
+      });
 
       // remove trailing comma
       b.delete(b.length() - 1, b.length());

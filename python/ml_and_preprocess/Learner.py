@@ -17,8 +17,9 @@ def train_and_evaluate(df, label_col='Price_Change', test_size=0.2):
 
     # Initialize and train MLP
     model = MLPRegressor(hidden_layer_sizes=(
-        1024,512, 256, 128, 64, 32, 16)
-                         , max_iter=8000, random_state=42, solver='adam',activation='tanh', alpha=0.01, early_stopping=True, learning_rate='adaptive', learning_rate_init=0.001)
+        2048,1024,512, 256, 128, 64, 32)
+        , max_iter=2000, random_state=42, solver='adam', activation='tanh', alpha=0.01, early_stopping=True,
+        learning_rate='adaptive', learning_rate_init=0.001)
     model.fit(X_train, y_train)
 
     # Evaluate
@@ -42,4 +43,3 @@ def predict_new(model_path, new_df):
     """
     model = joblib.load(model_path)
     return model.predict(new_df)
-

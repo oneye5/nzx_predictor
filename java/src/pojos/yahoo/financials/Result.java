@@ -34,6 +34,8 @@ public class Result {
             }
         }
 
+
+
         // If no applicable timestamp found, return empty list
         if (applicableIndex == -1) {
             //for(int i = 0; i < 47; i++){ // return equivalent number of null values to maintain data width

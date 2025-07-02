@@ -8,17 +8,13 @@ def load_data(csv_file):
     """Load data from CSV file."""
     try:
         data = pd.read_csv(csv_file)
-        return data
+        return data.sort_values(['Ticker', 'Time']).reset_index(drop=True)
     except FileNotFoundError:
         print(f"Error: File '{csv_file}' not found.")
         sys.exit(1)
     except Exception as e:
         print(f"Error loading file: {e}")
         sys.exit(1)
-
-def sort_by_timestamp(data):
-    """Sort data by timestamp."""
-    return data.sort_values(by=['Time'], ascending=True)
 
 def drop_constant_columns(df: pd.DataFrame) -> pd.DataFrame:
     """
@@ -68,7 +64,7 @@ def generate_labels(df: pd.DataFrame, lookahead_days: int) -> pd.DataFrame:
         )
 
         # 5) compute percent change
-        merged['Price_Change'] = (merged['FuturePrice'] - merged['Price']) / merged['Price']
+        merged['Price_Change'] = (merged['Price'] - merged['FuturePrice'] ) / merged['Price']
 
         results.append(merged)
 
@@ -125,39 +121,27 @@ def preprocess_data(data):
     # One-hot encode ticker
     data = pd.get_dummies(data, columns=['Ticker'], prefix='Ticker', dtype=int)
 
-    # Convert any booleans to integers (if still present)
+    # Convert booleans to integers
     bool_cols = data.select_dtypes(include='bool').columns
     data[bool_cols] = data[bool_cols].astype(int)
 
-    # Clean extreme / NaN values
+    # Handle infinities / NaNs
     data.replace([np.inf, -np.inf], np.nan, inplace=True)
     data.fillna(0.0, inplace=True)
     data = data.astype(float)
 
-    # Move label to last column
-    label_col = 'Price_Change'
-    if label_col not in data.columns:
-        raise ValueError("Missing 'Price_Change' column")
-
-    label = data[label_col]
-
-    # drop useless columns
+    # Drop constant columns
     data = drop_constant_columns(data)
-    data = data.drop(columns=["short-termInterestRate"])
 
-    # Identify binary vs continuous features
+    # Identify binary vs continuous features (excluding Time from scaling)
     binary_cols = data.columns[data.nunique() == 2]
-    continuous_cols = [col for col in data.columns if col not in binary_cols]
-    # Scale only continuous features
+    continuous_cols = [col for col in data.columns if col not in binary_cols and col != 'Time' and col != 'Price_Change']
+
+    # Scale only continuous (excluding time)
     scaler = RobustScaler()
     data[continuous_cols] = scaler.fit_transform(data[continuous_cols])
 
-    # Cast binary columns to int
-    data[binary_cols] = data[binary_cols].astype(int)
-
-    # Reattach label
-    data[label_col] = label
-
     return data
+
 
 
