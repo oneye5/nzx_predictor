@@ -2,11 +2,7 @@
 import pandas as pd
 import numpy as np
 import argparse
-import sys
-from sklearn.model_selection import train_test_split
-from sklearn.neural_network import MLPRegressor
-from sklearn.preprocessing import StandardScaler
-from sklearn.metrics import mean_squared_error, r2_score
+
 
 from NZX_scraper.python.ml_and_preprocess.DataProcessing import add_engineered_features, print_sample_data, load_data, \
     generate_labels, preprocess_data, drop_columns
@@ -31,8 +27,6 @@ def main():
     print("Adding engineered features")
     data = add_engineered_features(data)
     print_sample_data(data)
-
-    data = drop_columns(data)
 
     print("Adding labels")
     data = generate_labels(data, args.lookahead)

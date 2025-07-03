@@ -2,22 +2,19 @@
 import pandas as pd
 import numpy as np
 import sys
-
-from sklearn.impute import KNNImputer
 from sklearn.preprocessing import StandardScaler, RobustScaler, MinMaxScaler, Normalizer, RobustScaler
 
 def load_data(csv_file):
     """Load data from CSV file."""
     try:
         data = pd.read_csv(csv_file)
-        return data.sort_values(['Ticker', 'Time']).reset_index(drop=True)
+        return data.sort_values(['Ticker']).reset_index(drop=True)
     except FileNotFoundError:
         print(f"Error: File '{csv_file}' not found.")
         sys.exit(1)
     except Exception as e:
         print(f"Error loading file: {e}")
         sys.exit(1)
-
 
 def drop_constant_columns(df: pd.DataFrame) -> pd.DataFrame:
     """
@@ -110,7 +107,6 @@ def add_engineered_features(data):
     if 'TrailingFeesandCommissionExpense' in data.columns:
         data['CommissionEfficiency'] = data['TrailingFeesandCommissionExpense'] / (
                     data['AnnualTotalRevenue'] + epsilon)
-
     return data
 
 
@@ -148,7 +144,7 @@ def preprocess_data(data):
 
 def drop_columns(data):
 
-    #data = data.drop(columns=["gTrendsCompanyName"], errors="ignore")
+    data = data.drop(columns=["gTrendsCompanyName"], errors="ignore")
 
     # Drop financial features one-by-one (comment to re-add)
     #data = data.drop(columns=["AnnualTaxEffectOfUnusualItem"], errors="ignore")

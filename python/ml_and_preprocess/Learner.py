@@ -26,7 +26,7 @@ def train_and_evaluate(df, label_col='Price_Change', test_size=0.2):
         alpha=0.01,
         early_stopping=True,
         learning_rate='adaptive',
-        learning_rate_init = 0.001
+    learning_rate_init = 0.001
     )
     model.fit(X_train, y_train)
 
