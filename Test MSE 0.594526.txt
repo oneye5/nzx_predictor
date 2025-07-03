@@ -62,3 +62,44 @@ Test R²: -0.0174
 Test MSE: 0.953605
 Test R²: -0.0001
 
+
+
+
+
+
+Test MSE                : 0.954087
+Test MAE                : 0.540246
+Test Median Abs Error   : 0.355746
+Test Max Error          : 10.481929
+Test Explained Variance : -0.0000
+Test R²                 : -0.0006
+
+ADD BACK ENGINEERED
+
+Test MSE                : 0.954253
+Test MAE                : 0.541015
+Test Median Abs Error   : 0.356738
+Test Max Error          : 10.478666
+Test Explained Variance : 0.0000
+Test R²                 : -0.0008
+
+ADD BACK FLAGS
+
+Test MSE                : 0.954698
+Test MAE                : 0.542767
+Test Median Abs Error   : 0.361886
+Test Max Error          : 10.471451
+Test Explained Variance : 0.0000
+Test R²                 : -0.0012
+
+
+Test MSE                : 0.954067
+Test MAE                : 0.542209
+Test Median Abs Error   : 0.358382
+Test Max Error          : 10.449876
+Test Explained Variance : 0.0026
+Test R²                 : 0.0005
+
+Test MSE: 20.328930
+Test R²: 0.5629
+
