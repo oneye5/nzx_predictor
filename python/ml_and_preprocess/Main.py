@@ -28,8 +28,11 @@ def main():
 
 
     print_sample_data(data)
-    print("done preprocessing, starting training...")
 
+    print("label distribution")
+    print(data['Price_Change'].describe())
+
+    print("done preprocessing, starting training...")
     train_and_evaluate(data, label_col='Price_Change', test_size=0.3)
 
 

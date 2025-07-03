@@ -137,7 +137,4 @@ def preprocess_data(data):
 
     # Reattach label
     data[label_col] = label
-
     return data
-
-

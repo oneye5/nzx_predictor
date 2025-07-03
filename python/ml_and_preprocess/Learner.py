@@ -3,7 +3,9 @@ import joblib
 from sklearn.ensemble import RandomForestRegressor, GradientBoostingRegressor
 from sklearn.model_selection import train_test_split
 from sklearn.neural_network import MLPRegressor
-from sklearn.metrics import mean_squared_error, r2_score
+from sklearn.metrics import mean_squared_error, r2_score, mean_absolute_error, median_absolute_error, \
+    explained_variance_score, max_error
+
 
 def train_and_evaluate(df, label_col='Price_Change', test_size=0.2):
     # Separate features and label
@@ -23,11 +25,22 @@ def train_and_evaluate(df, label_col='Price_Change', test_size=0.2):
 
     # Evaluate
     preds = model.predict(X_test)
+    # Evaluation metrics
     mse = mean_squared_error(y_test, preds)
     r2 = r2_score(y_test, preds)
+    mae = mean_absolute_error(y_test, preds)
+    medae = median_absolute_error(y_test, preds)
+    evs = explained_variance_score(y_test, preds)
+    maxerr = max_error(y_test, preds)
 
-    print(f"Test MSE: {mse:.6f}")
-    print(f"Test R²: {r2:.4f}")
+    # Display results
+    print("Model Performance Metrics:")
+    print(f"Test MSE                : {mse:.6f}")
+    print(f"Test MAE                : {mae:.6f}")
+    print(f"Test Median Abs Error   : {medae:.6f}")
+    print(f"Test Max Error          : {maxerr:.6f}")
+    print(f"Test Explained Variance : {evs:.4f}")
+    print(f"Test R²                 : {r2:.4f}")
 
     # Save model
     joblib.dump(model, "mlp_model.joblib")
