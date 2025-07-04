@@ -1,8 +1,26 @@
 import pandas as pd
 import joblib
-from sklearn.ensemble import RandomForestRegressor, GradientBoostingRegressor, RandomForestClassifier
+from ngboost import NGBClassifier
+
+from catboost import CatBoostClassifier, CatBoost
+from lightgbm import LGBMClassifier
+from sklearn.neighbors import KNeighborsClassifier
+from sklearn.svm import SVC
+from xgboost import XGBClassifier
+from sklearn.ensemble import RandomForestRegressor, GradientBoostingRegressor, RandomForestClassifier, \
+    HistGradientBoostingClassifier, ExtraTreesClassifier, VotingClassifier
+from sklearn.model_selection import train_test_split
+from sklearn.neural_network import MLPRegressor, MLPClassifier
+from sklearn.metrics import mean_squared_error, r2_score, mean_absolute_error, median_absolute_error, \
+    explained_variance_score, max_error
 from sklearn.metrics import (
+    accuracy_score,
+    precision_score,
+    recall_score,
+    f1_score,
+    confusion_matrix,
     classification_report,
+    roc_auc_score
 )
 
 def train_and_evaluate(train_data, test_data, label_col='Price_Change'):
@@ -11,11 +29,13 @@ def train_and_evaluate(train_data, test_data, label_col='Price_Change'):
     train_data = train_data.drop(columns=[label_col])
     test_data = test_data.drop(columns=[label_col])
 
-    # Initialize and train MLP
-    model = RandomForestClassifier(
-        n_estimators=400,                  # More trees for better stability
-        max_depth=30,
-    )
+    estimators = [
+        ('rf', RandomForestClassifier(random_state=42)),
+        ('et', ExtraTreesClassifier(random_state=42)),
+        ('hgb', HistGradientBoostingClassifier(random_state=42))
+    ]
+
+    model = VotingClassifier(estimators=estimators, voting='soft', n_jobs=-1, verbose=True)
     model.fit(train_data, train_data_labels)
 
     # Evaluate

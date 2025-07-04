@@ -11,7 +11,7 @@ def main():
     parser = argparse.ArgumentParser(description='Process financial data and generate price labels')
     parser.add_argument('csv_file', nargs='?', default='C:/Users/ocjla/Desktop/Projects/NZX_scraper/NZX_scraper_jb/data.csv',
                         help='Path to CSV file')
-    parser.add_argument('--lookahead', type=int, default=700,
+    parser.add_argument('--lookahead', type=int, default=366,
                         help='Days to look ahead for labels (default: 30)')
 
     args = parser.parse_args()
@@ -22,7 +22,7 @@ def main():
     print(f"Loaded {len(data)} rows")
 
     # add labels
-    data = generate_labels(data, args.lookahead)
+    data = generate_labels(data, args.lookahead, 0.07)
     data = one_hot_encode_tickers(data)
     print_sample_data(data)
 

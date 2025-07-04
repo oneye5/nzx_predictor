@@ -81,7 +81,7 @@ def load_data(csv_file):
         print(f"Error loading file: {e}")
         sys.exit(1)
 
-def generate_labels(df: pd.DataFrame, lookahead_days: int) -> pd.DataFrame:
+def generate_labels(df: pd.DataFrame, lookahead_days: int, change_ratio_threshold : float = 0.05) -> pd.DataFrame:
     """
     Fast label generation by doing an as-of merge _per ticker_.
     For each ticker group:
@@ -118,7 +118,7 @@ def generate_labels(df: pd.DataFrame, lookahead_days: int) -> pd.DataFrame:
         )
 
         # 5) compute percent change
-        merged['Price_Change'] = (merged['FuturePrice'] - merged['Price']) > 0
+        merged['Price_Change'] = (merged['FuturePrice'] - merged['Price'])/merged['Price'] > change_ratio_threshold
 
         results.append(merged)
 
