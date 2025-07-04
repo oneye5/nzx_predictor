@@ -20,24 +20,33 @@ public class Scraper {
     List<HistoricPriceInformation> historicPrices;
     List<FinancialInformation> financials;
     List<List<Pair<Long,Float>>> gTrendsCompanyName;
+    CpiNz nzCpi;
 
     var pair = getHistoricAndFinancial(tickers);
-    historicPrices = pair.x();
+    historicPrices = pair.x(); // unpack pair
     financials = pair.y();
 
+    // get company names from metadata provided by historicPrices
     List<String> companyNames = historicPrices.stream()
             .map(h->h.chart.result.getFirst().meta.shortName)
             .toList();
-
+    // Use company names to get Google trends data on them
     gTrendsCompanyName = getAllGTrendsData(companyNames);
 
+    // Get interest rate data
     System.out.println("Getting nz CPI");
     Gson gson = new Gson();
     var nzCpiHtml = HtmlGetter.get(ApiUrls.getNzCpi());
     var nzCpiRaw = gson.fromJson(nzCpiHtml, SdmxResponse.class);
-    var nzCpi = CpiNz.getFromRaw(nzCpiRaw);
+    nzCpi = CpiNz.getFromRaw(nzCpiRaw);
+
+
     return new AllData(historicPrices, financials, gTrendsCompanyName, nzCpi);
   }
+
+  /**
+   * Gets historic price and financial information from an array of tickers
+   */
   public static Pair<List<HistoricPriceInformation>,List<FinancialInformation>> getHistoricAndFinancial(String[] tickers) {
     List<HistoricPriceInformation> historicPrices = Collections.synchronizedList(new ArrayList<>());
     List<FinancialInformation> financials = Collections.synchronizedList(new ArrayList<>());
