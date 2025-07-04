@@ -118,7 +118,7 @@ def generate_labels(df: pd.DataFrame, lookahead_days: int) -> pd.DataFrame:
         )
 
         # 5) compute percent change
-        merged['Price_Change'] = merged['FuturePrice'] - merged['Price']
+        merged['Price_Change'] = (merged['FuturePrice'] - merged['Price']) > 0
 
         results.append(merged)
 
@@ -171,29 +171,22 @@ def preprocess_data(data):
     # Drop placeholder 'NullValue' columns
     data = data.drop(columns=[col for col in data.columns if col.startswith('NullValue')], errors='ignore')
 
-    # Convert any booleans to integers (if still present)
+    # Convert booleans to integers
     bool_cols = data.select_dtypes(include='bool').columns
     data[bool_cols] = data[bool_cols].astype(int)
 
-    # Move label to last column
-    label_col = 'Price_Change'
-    if label_col not in data.columns:
-        raise ValueError("Missing 'Price_Change' column")
+    # Handle infinities / NaNs
+    data.replace([np.inf, -np.inf], np.nan, inplace=True)
+    data.fillna(0.0, inplace=True)
+    data = data.astype(float)
 
-    label = data[label_col]
-    data = data.drop(columns=[label_col])
-
-    # Identify binary vs continuous features
+    # Identify binary vs continuous features (excluding Time from scaling)
     binary_cols = data.columns[data.nunique() == 2]
-    continuous_cols = [col for col in data.columns if col not in binary_cols]
+    continuous_cols = [col for col in data.columns if
+                       col not in binary_cols and col != 'Time' and col != 'Price_Change']
 
-    # Scale only continuous features
+    # Scale only continuous (excluding time)
     scaler = RobustScaler()
     data[continuous_cols] = scaler.fit_transform(data[continuous_cols])
 
-    # Cast binary columns to int
-    data[binary_cols] = data[binary_cols].astype(int)
-
-    # Reattach label
-    data[label_col] = label
     return data
