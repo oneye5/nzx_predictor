@@ -21,6 +21,7 @@ public class ApiUrls {
     return NZ_CPI;
   }
 
+  private static final String NZ_BUSINESS_CONFIDENCE = "https://sdmx.oecd.org/public/rest/data/OECD.SDD.STES,DSD_STES@DF_CLI,4.1/NZL.M.......";
   private static final String NZ_CPI = "https://sdmx.oecd.org/public/rest/data/OECD.SDD.STES,DSD_STES@DF_FINMARK,4.0/NZL.M..PA.....?dimensionAtObservation=AllDimensions&format=jsondata";
   private static final String HISTORIC_PRICES = "https://query1.finance.yahoo.com/v8/finance/chart/{TICKER}?interval=1d&period1=0&period2=99999999999&includeAdjustedClose=true";
   private static final String FINANCIAL_INFORMATION = "https://query1.finance.yahoo.com/ws/fundamentals-timeseries/v1/finance/timeseries/{TICKER}"

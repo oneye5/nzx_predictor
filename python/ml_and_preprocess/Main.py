@@ -27,7 +27,7 @@ def main():
     print_sample_data(data)
 
     # Split for testing / training
-    train, test = split_data_by_time(data ,args.lookahead, 0.95)
+    train, test = split_data_by_time(data ,args.lookahead, 0.9)
     print_date_range(test,train)
 
     # Process data
