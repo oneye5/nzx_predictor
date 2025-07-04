@@ -7,31 +7,27 @@ from sklearn.metrics import mean_squared_error, r2_score, mean_absolute_error, m
     explained_variance_score, max_error
 
 
-def train_and_evaluate(df, label_col='Price_Change', test_size=0.2):
-    # Separate features and label
-    X = df.drop(columns=[label_col])
-    y = df[label_col]
-
-    # Time-based split: last test_size% of rows for testing
-    split_index = int(len(df) * (1 - test_size))
-    X_train, X_test = X.iloc[:split_index], X.iloc[split_index:]
-    y_train, y_test = y.iloc[:split_index], y.iloc[split_index:]
+def train_and_evaluate(train_data, test_data, label_col='Price_Change'):
+    train_data_labels = train_data[label_col]
+    test_data_labels = test_data[label_col]
+    train_data = train_data.drop(columns=[label_col])
+    test_data = test_data.drop(columns=[label_col])
 
     # Initialize and train MLP
     model = MLPRegressor(hidden_layer_sizes=(
         512, 256, 128, 64, 32, 16)
-                         , max_iter=2000, random_state=42, solver='adam',activation='tanh', alpha=0.01, early_stopping=True, learning_rate='adaptive', learning_rate_init=0.001)
-    model.fit(X_train, y_train)
+                         , max_iter=2000, random_state=42, solver='adam',activation='tanh', alpha=0.01, early_stopping=True, learning_rate='adaptive', learning_rate_init=0.001, verbose=True)
+    model.fit(train_data, train_data_labels)
 
     # Evaluate
-    preds = model.predict(X_test)
+    preds = model.predict(test_data)
     # Evaluation metrics
-    mse = mean_squared_error(y_test, preds)
-    r2 = r2_score(y_test, preds)
-    mae = mean_absolute_error(y_test, preds)
-    medae = median_absolute_error(y_test, preds)
-    evs = explained_variance_score(y_test, preds)
-    maxerr = max_error(y_test, preds)
+    mse = mean_squared_error(test_data_labels, preds)
+    r2 = r2_score(test_data_labels, preds)
+    mae = mean_absolute_error(test_data_labels, preds)
+    medae = median_absolute_error(test_data_labels, preds)
+    evs = explained_variance_score(test_data_labels, preds)
+    maxerr = max_error(test_data_labels, preds)
 
     # Display results
     print("Model Performance Metrics:")

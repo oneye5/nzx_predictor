@@ -3,8 +3,70 @@ import pandas as pd
 import numpy as np
 import argparse
 import sys
-
 from sklearn.preprocessing import StandardScaler, RobustScaler
+import pandas as pd
+from datetime import datetime
+
+def print_date_range(test, train):
+    def to_date(ts):
+        return datetime.utcfromtimestamp(ts).strftime('%Y-%m-%d')
+
+    if 'Time' in train.columns and 'Time' in test.columns:
+        train_start = to_date(train['Time'].min())
+        train_end   = to_date(train['Time'].max())
+
+        test_start  = to_date(test['Time'].min())
+        test_end    = to_date(test['Time'].max())
+
+        print(f"Train from: {train_start} to {train_end}")
+        print(f"Test from : {test_start} to {test_end}")
+    else:
+        print("Time column not found in train/test data.")
+
+
+def one_hot_encode_tickers(data):
+    return pd.get_dummies(data, columns=['Ticker'], prefix='Ticker', dtype=int)
+
+def random_split(data: pd.DataFrame, train_ratio: float = 0.7):
+    # Shuffle the data with a fixed random seed for reproducibility
+    data_shuffled = data.sample(frac=1, random_state=42).reset_index(drop=True)
+
+    # Compute the split index
+    split_index = int(len(data_shuffled) * train_ratio)
+
+    # Split into train and test
+    train_df = data_shuffled.iloc[:split_index].reset_index(drop=True)
+    test_df  = data_shuffled.iloc[split_index:].reset_index(drop=True)
+
+    return train_df, test_df
+
+
+
+def split_data_by_time(data: pd.DataFrame, lookahead: float, train_ratio: float = 0.8):
+    # 1) Convert lookahead from days to seconds
+    lookahead_seconds = lookahead * 24 * 60 * 60
+
+    # 2) Sort by time to ensure chronology
+    df = data.sort_values('Time').reset_index(drop=True)
+
+    # 3) Determine the last timestamp for which you _can_ have a label
+    max_time = df['Time'].max()
+    last_label_time = max_time - lookahead_seconds
+
+    # 4) Only consider rows up to that last label time
+    df = df[df['Time'] <= last_label_time]
+
+    # 5) Compute the cutoff time for the training set
+    min_time = df['Time'].min()
+    usable_span = last_label_time - min_time
+    train_cutoff = min_time + train_ratio * usable_span
+
+    # 6) Slice into train/test by timestamp
+    train_df = df[df['Time'] <= train_cutoff].reset_index(drop=True)
+    test_df  = df[df['Time']  > train_cutoff].reset_index(drop=True)
+
+    return train_df, test_df
+
 
 
 def load_data(csv_file):
@@ -18,7 +80,6 @@ def load_data(csv_file):
     except Exception as e:
         print(f"Error loading file: {e}")
         sys.exit(1)
-
 
 def generate_labels(df: pd.DataFrame, lookahead_days: int) -> pd.DataFrame:
     """
@@ -102,15 +163,13 @@ def add_engineered_features(data):
 
 
 
+
 def preprocess_data(data):
     # Remove unnamed/index columns
     data = data.loc[:, ~data.columns.str.contains('^Unnamed')]
 
     # Drop placeholder 'NullValue' columns
     data = data.drop(columns=[col for col in data.columns if col.startswith('NullValue')], errors='ignore')
-
-    # One-hot encode ticker
-    data = pd.get_dummies(data, columns=['Ticker'], prefix='Ticker', dtype=int)
 
     # Convert any booleans to integers (if still present)
     bool_cols = data.select_dtypes(include='bool').columns
