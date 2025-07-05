@@ -84,6 +84,27 @@ public class CpiNz {
 			}
 		});
 
+		// ensure all values are in 0.0 - 1 space
+		var keys = helper.timeSeriesData.keySet().stream().toList();
+		for (int i = 0; i < keys.size(); i++) {
+			var key = keys.get(i);
+			double[] value = helper.timeSeriesData.get(key);
+			double[] newValue = new double[value.length];
+
+			for (int j = 0; j < value.length; j++) {
+				var v = value[j];
+				if (v > 1) {
+					newValue[j] = v/10.0;
+				}
+				else {
+					newValue[j] = v;
+				}
+			}
+
+			helper.timeSeriesData.put(key, newValue);
+		}
+
+
 		return helper;
 	}
 
