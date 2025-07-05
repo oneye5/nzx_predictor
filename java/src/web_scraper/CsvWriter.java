@@ -131,13 +131,13 @@ public class CsvWriter {
     builder.append("gTrendsCompanyName,");
     builder.append("MissingFlag,");
 
-    builder.append("long-termInterestRate,");
+    builder.append("LongTermInterestRate,");
     builder.append("MissingFlag,");
-    builder.append("short-termInterestRate,");
+    builder.append("ShortTermInterestRate,");
     builder.append("MissingFlag,");
-    builder.append("immediate-termInterestRate,");
+    builder.append("ImmediateTermInterestRate,");
     builder.append("MissingFlag,");
-    builder.append("exchangeRateinterestRate,");
+    builder.append("ExchangeRateinterestRate,");
     builder.append("MissingFlag,");
 
     builder.append("BusinessConfidence,");

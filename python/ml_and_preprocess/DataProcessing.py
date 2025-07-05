@@ -159,6 +159,9 @@ def add_engineered_features(data):
     if 'TrailingFeesandCommissionExpense' in data.columns:
         data['CommissionEfficiency'] = data['TrailingFeesandCommissionExpense'] / (
                     data['AnnualTotalRevenue'] + epsilon)
+
+    data['ImmediateInterestVolatility'] = data['LongTermInterestRate'] - data['ImmediateTermInterestRate']
+    data['ShortTermInterestVolatility'] = data['LongTermInterestRate'] - data['ShortTermInterestRate']
     return data
 
 
