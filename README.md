@@ -12,3 +12,8 @@ There are two seperate runnable programs, each used in conjunction with each oth
 There is a Java program, that scrapes Yahoo Finance for financial information on selected tickers. It then converts from raw Json strings to a cleaned .csv file.
 
 From there there is a Python program that further processes this data from the .csv file, performing one hot encoding, feature engineering and normalization tasks, where the data is then passed onto SKLearn to create and evaluate a machine learning model. 
+
+# Data sources
+Yahoo finance for share price & financials,
+OECD for economic related information,
+Google Trends for search interest
