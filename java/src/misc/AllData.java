@@ -9,6 +9,6 @@ import java.util.List;
 public record AllData(List<HistoricPriceInformation> priceInformation,
 											List<FinancialInformation> financialInformation,
 											List<List<Pair<Long,Float>>> gTrendsCompanyName,
-											CpiNz cpiNz) {
+											CpiNz cpiNz, BusinessConfidenceNz businessConfidence) {
 
 }

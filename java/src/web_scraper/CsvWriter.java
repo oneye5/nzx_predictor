@@ -7,6 +7,7 @@ import java.nio.file.Paths;
 import java.util.*;
 
 import misc.AllData;
+import misc.BusinessConfidenceNz;
 import misc.CpiNz;
 import misc.Pair;
 import pojos.yahoo.financials.FinancialFeatureBase;
@@ -137,8 +138,12 @@ public class CsvWriter {
     builder.append("immediate-termInterestRate,");
     builder.append("MissingFlag,");
     builder.append("exchangeRateinterestRate,");
-    builder.append("MissingFlag");
+    builder.append("MissingFlag,");
 
+    builder.append("BusinessConfidence,");
+    builder.append("MissingFlag,");
+    builder.append("ConsumerConfidence,");
+    builder.append("MissingFlag");
     builder.append("\n");
   }
 
@@ -261,6 +266,26 @@ public class CsvWriter {
 				item.ifPresentOrElse(
                 number -> b.append(number).append(",1,"),
                 ()->b.append("-0.0,0,"));
+      });
+
+      //Business and consumer confidence ===============================================================
+      var busConData = data.businessConfidence().contents();
+      var busConf = TimeSeriesInterpolator
+              .getInterpMostRecent(
+                      busConData.keySet(), // times
+                      (t)-> busConData.get(t).get(BusinessConfidenceNz.BUSINESS), // value getter
+                      time, Objects::nonNull); // validation
+      var conConf = TimeSeriesInterpolator
+              .getInterpMostRecent(
+                      busConData.keySet(), // times
+                      (t)-> busConData.get(t).get(BusinessConfidenceNz.CONSUMER), // value getter
+                      time, Objects::nonNull); // validation
+
+      List.of(busConf,conConf).forEach(v->{
+        v.ifPresentOrElse(
+                number-> b.append(number).append(",1,"),
+                ()->b.append("-0.0,0,")
+        );
       });
 
       // remove trailing comma

@@ -2,6 +2,7 @@ package web_scraper;
 
 import com.google.gson.Gson;
 import misc.AllData;
+import misc.BusinessConfidenceNz;
 import misc.CpiNz;
 import misc.Pair;
 import pojos.oecd.cpi_nz.SdmxResponse;
@@ -28,7 +29,11 @@ public class Scraper {
 
     // get company names from metadata provided by historicPrices
     List<String> companyNames = historicPrices.stream()
-            .map(h->h.chart.result.getFirst().meta.shortName)
+            .map(h->{
+              try {
+                return h.chart.result.getFirst().meta.shortName;
+              } catch (Exception e) {return null;}
+            })
             .toList();
     // Use company names to get Google trends data on them
     gTrendsCompanyName = getAllGTrendsData(companyNames);
@@ -40,8 +45,12 @@ public class Scraper {
     var nzCpiRaw = gson.fromJson(nzCpiHtml, SdmxResponse.class);
     nzCpi = CpiNz.getFromRaw(nzCpiRaw);
 
+    // businessConfidence
+    System.out.println("Getting business and consumer confidence data");
+    var businessConfidence = BusinessConfidenceNz.get(HtmlGetter.get(ApiUrls.getNzBusinessConfidence()));
 
-    return new AllData(historicPrices, financials, gTrendsCompanyName, nzCpi);
+    // Wrap data and return
+    return new AllData(historicPrices, financials, gTrendsCompanyName, nzCpi,businessConfidence);
   }
 
   /**
@@ -123,8 +132,12 @@ public class Scraper {
             .parallel()
             .forEach(i -> {
               try {
-                var result = getGTrendsData(companyNames.get(i));
-                results.set(i, result);
+                if (companyNames.get(i) == null) {
+                  results.set(i,null);
+                } else {
+                  var result = getGTrendsData(companyNames.get(i));
+                  results.set(i, result);
+                }
               } catch (Exception e) {
                 results.set(i, null);
               }
