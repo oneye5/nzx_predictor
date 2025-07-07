@@ -20,6 +20,7 @@ def print_date_range(test, train):
 
         print(f"Train from: {train_start} to {train_end}")
         print(f"Test from : {test_start} to {test_end}")
+        return train_start, train_end, test_start, test_end
     else:
         print("Time column not found in train/test data.")
 
@@ -39,8 +40,6 @@ def random_split(data: pd.DataFrame, train_ratio: float = 0.7):
     test_df  = data_shuffled.iloc[split_index:].reset_index(drop=True)
 
     return train_df, test_df
-
-
 
 def split_data_by_time(data: pd.DataFrame, lookahead: float, train_ratio: float = 0.8):
     # 1) Convert lookahead from days to seconds
@@ -118,13 +117,13 @@ def generate_labels(df: pd.DataFrame, lookahead_days: int, change_ratio_threshol
         )
 
         # 5) compute percent change
-        merged['Price_Change'] = (merged['FuturePrice'] - merged['Price'])/merged['Price'] > change_ratio_threshold
-
+        merged['Label'] = (merged['FuturePrice'] - merged['Price'])/merged['Price'] > change_ratio_threshold
+        merged['Price_Change_Percent'] = (merged['FuturePrice'] - merged['Price'])/merged['Price']
         results.append(merged)
 
     # 6) combine all tickers and drop unlabeled rows
     combined = pd.concat(results, ignore_index=True)
-    labeled = combined.dropna(subset=['Price_Change'])
+    labeled = combined.dropna(subset=['Label'])
 
     # 7) clean up helper columns
     return labeled.drop(columns=['TargetTime', 'FutureTime', 'FuturePrice'])
@@ -166,9 +165,6 @@ def add_engineered_features(data):
 
     return data
 
-
-
-
 def preprocess_data(data):
     # Remove unnamed/index columns
     data = data.loc[:, ~data.columns.str.contains('^Unnamed')]
@@ -188,10 +184,14 @@ def preprocess_data(data):
     # Identify binary vs continuous features (excluding Time from scaling)
     binary_cols = data.columns[data.nunique() == 2]
     continuous_cols = [col for col in data.columns if
-                       col not in binary_cols and col != 'Time' and col != 'Price_Change']
+                       col not in binary_cols and col != 'Time' and col != 'Label' and col != 'Price_Change_Percent']
 
     # Scale only continuous (excluding time)
     scaler = RobustScaler()
     data[continuous_cols] = scaler.fit_transform(data[continuous_cols])
 
-    return data
+    # Separate actual price change
+    price_change_percent = data['Price_Change_Percent']
+    data = data.drop(columns=['Price_Change_Percent'])
+
+    return data, price_change_percent

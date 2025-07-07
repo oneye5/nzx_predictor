@@ -23,7 +23,7 @@ from sklearn.metrics import (
     roc_auc_score
 )
 
-def train_and_evaluate(train_data, test_data, label_col='Price_Change'):
+def train_and_evaluate(train_data, test_data, label_col='Label'):
     train_data_labels = train_data[label_col]
     test_data_labels = test_data[label_col]
     train_data = train_data.drop(columns=[label_col])
@@ -32,10 +32,12 @@ def train_and_evaluate(train_data, test_data, label_col='Price_Change'):
     estimators = [
         ('rf', RandomForestClassifier(random_state=42)),
         ('et', ExtraTreesClassifier(random_state=42)),
-        ('hgb', HistGradientBoostingClassifier(random_state=42))
+        ('hgb', HistGradientBoostingClassifier(random_state=42)),
+        ('xgb', XGBClassifier(random_state=42)),
+        ('lgbm', LGBMClassifier(random_state=42,verbose=-1)),
     ]
 
-    model = VotingClassifier(estimators=estimators, voting='soft', n_jobs=-1, verbose=True)
+    model = VotingClassifier(estimators=estimators, voting='soft', n_jobs=-1)
     model.fit(train_data, train_data_labels)
 
     # Evaluate
@@ -47,9 +49,9 @@ def train_and_evaluate(train_data, test_data, label_col='Price_Change'):
 
     # Save model
     joblib.dump(model, "mlp_model.joblib")
-    print("Model saved to mlp_model.joblib")
+    #print("Model saved to mlp_model.joblib")
 
-    return model
+    return test_data_labels, preds, test_data
 
 def predict_new(model_path, new_df):
     """

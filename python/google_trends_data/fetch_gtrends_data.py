@@ -3,7 +3,7 @@ import pandas as pd
 import warnings
 from pytrends.request import TrendReq
 
-exit(-1)
+#exit(-1)
 
 warnings.filterwarnings("ignore", category=FutureWarning)
 keyword = ""
