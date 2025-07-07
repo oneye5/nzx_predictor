@@ -42,6 +42,7 @@ Summary of all results =======<br>
 
 
 === Trading Simulation Summary ===<br>
+(Note, these are raw values. Taxes and broker fees are not taken into account)<br>
 | Metric              | Value              |
 | ------------------- | ------------------ |
 | **Trades executed** | 25,959             |
