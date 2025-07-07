@@ -21,7 +21,7 @@ Google Trends for search interest
 # Credibility and leakage
 
 # Performance
-Testing is an incredibly important part of a program of this nature, if this were to be used to inform investing decisions, poor testing could result in misleading users leading to financial losses. Because of this a few aproaches are combined together in order to attempt to prove the models performance, generalization and accuracy. Due to the complexity of these testing aproaches, I have created a diagram to hopefully make this easier to interpret. \n
+Testing is an incredibly important part of a program of this nature, if this were to be used to inform investing decisions, poor testing could result in misleading users leading to financial losses. Because of this a few aproaches are combined together in order to attempt to prove the models performance, generalization and accuracy. Due to the complexity of these testing aproaches, I have created a diagram to hopefully make this easier to interpret. <br>
 ![Untitled Diagram drawio](https://github.com/user-attachments/assets/36d9e3b4-a1a8-40fb-8f10-eac11a446642)
 
 **As of 7/07/25 the model performs as follows:**
