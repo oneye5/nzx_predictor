@@ -258,10 +258,10 @@ public class CsvWriter {
       });
 
       // Get interpolated values
-      var r1 = TimeSeriesInterpolator.getInterpMostRecent(cpi1.keySet(), cpi1::get, time,(v)->!v.equals(0.0));
-      var r2 = TimeSeriesInterpolator.getInterpMostRecent(cpi2.keySet(), cpi2::get, time,(v)->!v.equals(0.0));
-      var r3 = TimeSeriesInterpolator.getInterpMostRecent(cpi3.keySet(), cpi3::get, time,(v)->!v.equals(0.0));
-      var r4 = TimeSeriesInterpolator.getInterpMostRecent(cpi4.keySet(), cpi4::get, time,(v)->!v.equals(0.0));
+      var r1 = TimeSeriesInterpolator.getMostRecent(cpi1.keySet(), cpi1::get, time,(v)->!v.equals(0.0));
+      var r2 = TimeSeriesInterpolator.getMostRecent(cpi2.keySet(), cpi2::get, time,(v)->!v.equals(0.0));
+      var r3 = TimeSeriesInterpolator.getMostRecent(cpi3.keySet(), cpi3::get, time,(v)->!v.equals(0.0));
+      var r4 = TimeSeriesInterpolator.getMostRecent(cpi4.keySet(), cpi4::get, time,(v)->!v.equals(0.0));
       List.of(r1,r2,r3,r4).forEach(item->{
 				item.ifPresentOrElse(
                 number -> b.append(number).append(",1,"),
@@ -271,12 +271,12 @@ public class CsvWriter {
       //Business and consumer confidence ===============================================================
       var busConData = data.businessConfidence().contents();
       var busConf = TimeSeriesInterpolator
-              .getInterpMostRecent(
+              .getMostRecent(
                       busConData.keySet(), // times
                       (t)-> busConData.get(t).get(BusinessConfidenceNz.BUSINESS), // value getter
                       time, Objects::nonNull); // validation
       var conConf = TimeSeriesInterpolator
-              .getInterpMostRecent(
+              .getMostRecent(
                       busConData.keySet(), // times
                       (t)-> busConData.get(t).get(BusinessConfidenceNz.CONSUMER), // value getter
                       time, Objects::nonNull); // validation

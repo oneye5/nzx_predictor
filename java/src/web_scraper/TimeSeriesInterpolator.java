@@ -1,5 +1,6 @@
 package web_scraper;
 
+import javax.swing.text.html.Option;
 import java.util.Collection;
 import java.util.List;
 import java.util.Optional;
@@ -40,5 +41,26 @@ public class TimeSeriesInterpolator {
 
 		double proportion = (targetTime - before) / (double)(after - before);
 		return Optional.of(v1 + proportion * (v2 - v1));
+	}
+
+	/**
+	 * Gets the first datapoint occurring before the target time, returning its value
+	 */
+	public static Optional<Number> getMostRecent(Collection<Long> times, Function<Long, Number> getValue, Long targetTime, Function<Number,Boolean> validity) {
+		List<Long> timesFiltered = times.stream()
+						.filter(time->validity.apply(getValue.apply(time)))
+						.toList();
+
+		Long before = timesFiltered.stream()
+						.filter(x->x < targetTime)
+						.max(Long::compare)
+						.orElse(null);
+
+		// if incomplete data
+		if(before == null) {
+			return Optional.empty();
+		}
+
+		return Optional.of(getValue.apply(before).doubleValue());
 	}
 }
