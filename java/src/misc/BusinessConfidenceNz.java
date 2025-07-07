@@ -12,10 +12,19 @@ import java.time.*;
 import java.time.format.DateTimeFormatter;
 import java.util.*;
 
+/**
+ * Helper class to parse and store business confidence data
+ *
+ * @author Owan Lazic
+ */
 public record BusinessConfidenceNz(Map<Long, Map<String, Float>> contents) {
-	public static final String BUSINESS = "BCICP";
-	public static final String CONSUMER = "CCICP";
 
+	public static final String BUSINESS = "BCICP"; // Business confidence key
+	public static final String CONSUMER = "CCICP"; // Consumer confidence key
+
+	/**
+	 * Factory method, parses raw data and returns an object of this type
+	 */
 	public static BusinessConfidenceNz get(String html) {
 		try {
 			// Parse XML
@@ -65,7 +74,7 @@ public record BusinessConfidenceNz(Map<Long, Map<String, Float>> contents) {
 								"generic:ObsValue/@value", obs
 				);
 
-				// Convert "YYYY-MM" → epoch seconds (start of month UTC)
+				// Convert "YYYY-MM" to epoch seconds (start of month UTC)
 				YearMonth ym = YearMonth.parse(timePeriod, ymFmt);
 				long epochSec = ym.atDay(1)
 								.atStartOfDay(ZoneOffset.UTC)
@@ -74,8 +83,7 @@ public record BusinessConfidenceNz(Map<Long, Map<String, Float>> contents) {
 
 				float value = Float.parseFloat(valText);
 
-				contents
-								.computeIfAbsent(epochSec, k -> new HashMap<>())
+				contents.computeIfAbsent(epochSec, k -> new HashMap<>())
 								.put(measure, value);
 			}
 
