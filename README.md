@@ -9,7 +9,7 @@ This paper outlines research done into machine learning and finance, and has pro
 # How does this program work?
 There are two seperate runnable programs, each used in conjunction with each other.<br>
 
-There is a Java program, that scrapes Yahoo Finance for financial information on selected tickers. It then converts from raw Json strings to a cleaned .csv file.<br>
+There is a Java program, that scrapes Yahoo Finance for financial information on selected tickers. It then converts from raw Json strings / XML to a cleaned .csv file.<br>
 
 From there, there is a Python program that further processes this data from the .csv file, performing one hot encoding, feature engineering and normalization tasks, where the data is then passed onto SKLearn to create and evaluate a machine learning model. 
 
