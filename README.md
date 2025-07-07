@@ -33,24 +33,27 @@ Test to: 2024-07-04<br>
 Lookahead time = 366 days<br>
 Training split size = ~6 months<br>
 
-Summary of all results =======
-              precision    recall  f1-score   support
+Summary of all results =======<br>
+| Metric           | Precision | Recall | F1-Score   | Support |
+| ---------------- | --------- | ------ | ---------- | ------- |
+| **Class 0.0**    | 0.7053    | 0.7209 | 0.7130     | 39,195  |
+| **Class 1.0**    | 0.5786    | 0.5599 | 0.5691     | 26,826  |
+| **Accuracy**     |           |        | **0.6555** | 66,021  |
+| **Macro Avg**    | 0.6420    | 0.6404 | 0.6411     | 66,021  |
+| **Weighted Avg** | 0.6539    | 0.6555 | 0.6546     | 66,021  |
 
-         0.0     0.7053    0.7209    0.7130     39195
-         1.0     0.5786    0.5599    0.5691     26826
 
-    accuracy                         0.6555     66021
-   macro avg     0.6420    0.6404    0.6411     66021
-weighted avg     0.6539    0.6555    0.6546     66021
+=== Trading Simulation Summary ===<br>
+| Metric              | Value              |
+| ------------------- | ------------------ |
+| **Trades executed** | 25,959             |
+| **Average return**  | 16.96%             |
+| **Win rate**        | 70.7% (gains > 0%) |
+| **Sharpe ratio**    | 0.393              |
+| **Return range**    | -89.66% to 511.43% |
+| **25th percentile** | -1.56%             |
+| **75th percentile** | 25.81%             |
 
-=== Trading Simulation Summary ===
-Trades executed  : 25959
-Average return   : 16.96%
-Win rate         : 70.7% (defined as gains greater than 0%)
-Sharpe ratio     : 0.393
-Return range     : -89.66% … 511.43%
-  25th pct (LQ)  : -1.56%
-  75th pct (UQ)  : 25.81%
 
 
 
