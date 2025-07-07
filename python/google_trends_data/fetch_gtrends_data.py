@@ -3,7 +3,7 @@ import pandas as pd
 import warnings
 from pytrends.request import TrendReq
 
-#exit(-1)
+# Note, heavy rate limits are enforced with Google trends
 
 warnings.filterwarnings("ignore", category=FutureWarning)
 keyword = ""

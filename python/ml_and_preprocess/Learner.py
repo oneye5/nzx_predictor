@@ -1,3 +1,5 @@
+from typing import Tuple
+
 import pandas as pd
 import joblib
 from ngboost import NGBClassifier
@@ -14,16 +16,10 @@ from sklearn.neural_network import MLPRegressor, MLPClassifier
 from sklearn.metrics import mean_squared_error, r2_score, mean_absolute_error, median_absolute_error, \
     explained_variance_score, max_error
 from sklearn.metrics import (
-    accuracy_score,
-    precision_score,
-    recall_score,
-    f1_score,
-    confusion_matrix,
     classification_report,
-    roc_auc_score
 )
 
-def train_and_evaluate(train_data, test_data, label_col='Label'):
+def train_and_evaluate(train_data, test_data, label_col='Label') -> Tuple[pd.DataFrame, pd.DataFrame, pd.DataFrame]:
     train_data_labels = train_data[label_col]
     test_data_labels = test_data[label_col]
     train_data = train_data.drop(columns=[label_col])
@@ -53,7 +49,7 @@ def train_and_evaluate(train_data, test_data, label_col='Label'):
 
     return test_data_labels, preds, test_data
 
-def predict_new(model_path, new_df):
+def predict_new(model_path, new_df) -> pd.DataFrame:
     """
     Load a saved model and predict on new DataFrame (preprocessed).
     Returns array of predictions.
