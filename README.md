@@ -27,32 +27,32 @@ Due to the complexity of these testing aproaches, I have created a diagram to ho
 ![Untitled Diagram drawio](https://github.com/user-attachments/assets/36d9e3b4-a1a8-40fb-8f10-eac11a446642)
 
 **As of 7/07/25 the model performs as follows:**<br>
-  Train from: 2000-01-02<br>
-  Test to: 2024-07-04<br>
-  7.000000%+ gain decision boundary<br>
-  Lookahead time = 366 days<br>
-  Training split size = ~6 months<br>
+Train from: 2000-01-02<br>
+Test to: 2024-07-04<br>
+7.000000%+ gain decision boundary<br>
+Lookahead time = 366 days<br>
+Training split size = ~6 months<br>
 
-  Summary of all results =======<br>
-  | Metric           | Precision | Recall | F1-Score   | Support |
-  | ---------------- | --------- | ------ | ---------- | ------- |
-  | **Class 0.0**    | 0.7053    | 0.7209 | 0.7130     | 39,195  |
-  | **Class 1.0**    | 0.5786    | 0.5599 | 0.5691     | 26,826  |
-  | **Accuracy**     |           |        | **0.6555** | 66,021  |
-  | **Macro Avg**    | 0.6420    | 0.6404 | 0.6411     | 66,021  |
-  | **Weighted Avg** | 0.6539    | 0.6555 | 0.6546     | 66,021  |
+Summary of all results =======<br>
+| Metric           | Precision | Recall | F1-Score   | Support |
+| ---------------- | --------- | ------ | ---------- | ------- |
+| **Class 0.0**    | 0.7053    | 0.7209 | 0.7130     | 39,195  |
+| **Class 1.0**    | 0.5786    | 0.5599 | 0.5691     | 26,826  |
+| **Accuracy**     |           |        | **0.6555** | 66,021  |
+| **Macro Avg**    | 0.6420    | 0.6404 | 0.6411     | 66,021  |
+| **Weighted Avg** | 0.6539    | 0.6555 | 0.6546     | 66,021  |
 
 
-  === Trading Simulation Summary ===<br>
-  | Metric              | Value              |
-  | ------------------- | ------------------ |
-  | **Trades executed** | 25,959             |
-  | **Average return**  | 16.96%             |
-  | **Win rate**        | 70.7% (gains > 0%) |
-  | **Sharpe ratio**    | 0.393              |
-  | **Return range**    | -89.66% to 511.43% |
-  | **25th percentile** | -1.56%             |
-  | **75th percentile** | 25.81%             |
+=== Trading Simulation Summary ===<br>
+| Metric              | Value              |
+| ------------------- | ------------------ |
+| **Trades executed** | 25,959             |
+| **Average return**  | 16.96%             |
+| **Win rate**        | 70.7% (gains > 0%) |
+| **Sharpe ratio**    | 0.393              |
+| **Return range**    | -89.66% to 511.43% |
+| **25th percentile** | -1.56%             |
+| **75th percentile** | 25.81%             |
 
 
 
