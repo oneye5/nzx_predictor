@@ -24,7 +24,7 @@ Because of this a few aproaches are combined together in order to attempt to pro
 Due to the complexity of these testing aproaches, I have created a diagram to hopefully make this easier to interpret. <br>
 ![Untitled Diagram drawio](https://github.com/user-attachments/assets/36d9e3b4-a1a8-40fb-8f10-eac11a446642)
 
-**As of 7/07/25 the model performs as follows:**<br>
+**As of 8/07/25 the model performs as follows:**<br>
 Train from: 2000-01-02<br>
 Test to: 2024-07-04<br>
 7.000000%+ gain decision boundary<br>
@@ -47,7 +47,7 @@ Summary of all results =======<br>
 (Note, these are raw values. Taxes and broker fees are not taken into account)<br>
 - **Trades Executed**: 27,212  
 - **Average Return**: 18.54%  
-- **Win Rate**: 72.2%  
+- **Win Rate**: 72.2%  (gain > 0)
 - **Sharpe Ratio**: 0.404  
 - **Return Range**: -89.66% … 578.64%  
 - **25th Percentile (LQ)**: -0.62%  
