@@ -64,3 +64,7 @@ TODO
 # How to use
 TODO
 
+# API Caveats
+Upon testing the program on a new network, the program failed due not getting no responce from OECD, this was because OECD is unfamiliar with the IP and gave a captcha prompt. To get around this, you can simply open this link in your browser and click through the captcha, upon completing this, the data collection should work:<br> https://sdmx.oecd.org/public/rest/data/OECD.SDD.STES,DSD_STES@DF_FINMARK,4.0/NZL.M..PA.....?dimensionAtObservation=AllDimensions&format=jsondata <br>
+
+
