@@ -1,4 +1,4 @@
-package misc;
+package web_scraper.request_helpers;
 
 import pojos.oecd.cpi_nz.DataSet;
 import pojos.oecd.cpi_nz.Dimension;
@@ -9,7 +9,7 @@ import java.time.LocalDate;
 import java.time.ZoneOffset;
 import java.util.*;
 
-public class CpiNz {
+public class NzCpi {
 
 	// Map of timestamp -> array of values [longTermRate, shortTermRate, immediateRate, exchangeRate]
 	public Map<Long, double[]> timeSeriesData;
@@ -18,15 +18,15 @@ public class CpiNz {
 	public List<String> measureTypes;
 	public List<String> measureNames;
 
-	private CpiNz() {
+	private NzCpi() {
 		this.timeSeriesData = new TreeMap<>(); // TreeMap to keep timestamps sorted
 		this.measureTypes = Arrays.asList("IRLT", "IR3TIB", "IRSTCI", "CC");
 		this.measureNames = Arrays.asList("Long-term Interest Rate", "Short-term Interest Rate",
 						"Immediate Interest Rate", "Exchange Rate");
 	}
 
-	public static CpiNz getFromRaw(SdmxResponse response) {
-		CpiNz helper = new CpiNz();
+	public static NzCpi getFromRaw(SdmxResponse response) {
+		NzCpi helper = new NzCpi();
 
 		if (response == null || response.data == null ||
 						response.data.structures == null || response.data.dataSets == null ||

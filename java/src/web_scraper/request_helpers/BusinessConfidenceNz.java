@@ -1,4 +1,4 @@
-package misc;
+package web_scraper.request_helpers;
 
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
@@ -25,7 +25,7 @@ public record BusinessConfidenceNz(Map<Long, Map<String, Float>> contents) {
 	/**
 	 * Factory method, parses raw data and returns an object of this type
 	 */
-	public static BusinessConfidenceNz get(String html) {
+	public static BusinessConfidenceNz getFromRaw(String html) {
 		try {
 			// Parse XML
 			DocumentBuilderFactory dbf = DocumentBuilderFactory.newInstance();

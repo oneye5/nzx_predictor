@@ -7,8 +7,7 @@ import java.nio.file.Paths;
 import java.util.*;
 
 import misc.AllData;
-import misc.BusinessConfidenceNz;
-import misc.CpiNz;
+import web_scraper.request_helpers.BusinessConfidenceNz;
 import misc.Pair;
 import pojos.yahoo.financials.FinancialFeatureBase;
 import pojos.yahoo.financials.FinancialInformation;
@@ -144,6 +143,31 @@ public class CsvWriter {
     builder.append("MissingFlag,");
     builder.append("ConsumerConfidence,");
     builder.append("MissingFlag");
+
+    builder.append("ConsumptionExpenditureHouseholdCalAdjustChainLink,");
+    builder.append("MissingFlag,");
+    builder.append("ConsumptionExpenditureGovtCalAdjustChainLink,");
+    builder.append("MissingFlag,");
+    builder.append("GrossFixedCapitalFormationGovtCalAdjustChainLink,");
+    builder.append("MissingFlag,");
+    builder.append("ConsumptionExpenditureHouseholdCalAdjustCurrentPrices,");
+    builder.append("MissingFlag,");
+    builder.append("ConsumptionExpenditureGovtCalAdjustCurrentPrices,");
+    builder.append("MissingFlag,");
+    builder.append("GrossFixedCapitalFormationGovtCalAdjustCurrentPrices,");
+    builder.append("MissingFlag,");
+    builder.append("ConsumptionExpenditureHouseholdChainLink,");
+    builder.append("MissingFlag,");
+    builder.append("ConsumptionExpenditureGovtChainLink,");
+    builder.append("MissingFlag,");
+    builder.append("GrossFixedCapitalFormationGovtChainLink,");
+    builder.append("MissingFlag,");
+    builder.append("ConsumptionExpenditureHouseholdCurrentPrice,");
+    builder.append("MissingFlag,");
+    builder.append("ConsumptionExpenditureGovtCurrentPrice,");
+    builder.append("MissingFlag,");
+    builder.append("GrossFixedCapitalFormationGovtCurrentPrice,");
+    builder.append("MissingFlag,");
     builder.append("\n");
   }
 
@@ -234,7 +258,7 @@ public class CsvWriter {
       b.append(",");
 
       // add NZ CPI info ====================================================================
-      var cpiMap = data.cpiNz().timeSeriesData;
+      var cpiMap = data.nzCpi().timeSeriesData;
       // split map into 4 maps for use in TimeSeriesInterpolator
       Map<Long,Double> cpi1 = new HashMap<>();
       Map<Long,Double> cpi2 = new HashMap<>();
@@ -259,7 +283,7 @@ public class CsvWriter {
                 ()->b.append("-0.0,0,"));
       });
 
-      //Business and consumer confidence ===============================================================
+      // Business and consumer confidence ===============================================================
       var busConData = data.businessConfidence().contents();
       var busConf = TimeSeriesInterpolator
               .getMostRecent(
@@ -278,6 +302,29 @@ public class CsvWriter {
                 ()->b.append("-0.0,0,")
         );
       });
+
+      // GDP ============================================================================================
+      int expectedValueCount = 12;
+      var gdp = data.nzGdp();
+
+      if(gdp.data.get(gdp.data.keySet().stream().toList().getFirst()).length != expectedValueCount) {
+        System.out.println("Unexpected number of values in gdp data array");
+      }
+
+      for(int featureIndex = 0; featureIndex < expectedValueCount; featureIndex++){
+        int finalFeatureIndex = featureIndex;
+
+        // for each feature
+        var valueOptional = TimeSeriesInterpolator.getMostRecent(
+                gdp.data.keySet(),
+                (t)-> gdp.data.get(t)[finalFeatureIndex],
+                time,
+                Objects::nonNull
+        );
+        valueOptional.ifPresentOrElse(
+                number-> b.append(number).append(",1,"),
+                ()->b.append("-0.0,0,"));
+      }
 
       // remove trailing comma
       b.delete(b.length() - 1, b.length());

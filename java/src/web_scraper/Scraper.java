@@ -2,12 +2,13 @@ package web_scraper;
 
 import com.google.gson.Gson;
 import misc.AllData;
-import misc.BusinessConfidenceNz;
-import misc.CpiNz;
+import web_scraper.request_helpers.BusinessConfidenceNz;
+import web_scraper.request_helpers.NzCpi;
 import misc.Pair;
 import pojos.oecd.cpi_nz.SdmxResponse;
 import pojos.yahoo.financials.FinancialInformation;
 import pojos.yahoo.prices.HistoricPriceInformation;
+import web_scraper.request_helpers.NzGdp;
 
 import java.io.*;
 import java.util.*;
@@ -21,7 +22,7 @@ public class Scraper {
     List<HistoricPriceInformation> historicPrices;
     List<FinancialInformation> financials;
     List<List<Pair<Long,Float>>> gTrendsCompanyName;
-    CpiNz nzCpi;
+    NzCpi nzCpi;
 
     var pair = getHistoricAndFinancial(tickers);
     historicPrices = pair.x(); // unpack pair
@@ -43,14 +44,16 @@ public class Scraper {
     Gson gson = new Gson();
     var nzCpiHtml = HtmlGetter.get(ApiUrls.getNzCpi());
     var nzCpiRaw = gson.fromJson(nzCpiHtml, SdmxResponse.class);
-    nzCpi = CpiNz.getFromRaw(nzCpiRaw);
+    nzCpi = NzCpi.getFromRaw(nzCpiRaw);
 
-    // businessConfidence
     System.out.println("Getting business and consumer confidence data");
-    var businessConfidence = BusinessConfidenceNz.get(HtmlGetter.get(ApiUrls.getNzBusinessConfidence()));
+    var businessConfidence = BusinessConfidenceNz.getFromRaw(HtmlGetter.get(ApiUrls.getNzBusinessConfidence()));
+
+    System.out.println("Getting GDP data");
+    var gdp = NzGdp.getFromRaw(HtmlGetter.get(ApiUrls.getNzGdp()));
 
     // Wrap data and return
-    return new AllData(historicPrices, financials, gTrendsCompanyName, nzCpi,businessConfidence);
+    return new AllData(historicPrices, financials, gTrendsCompanyName, nzCpi,businessConfidence, gdp);
   }
 
   /**
