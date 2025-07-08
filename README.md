@@ -55,7 +55,11 @@ Training split size = ~6 months<br>
 - **75th percentile (UQ)**: 25.05%
 
 # Credibility and leakage
-As seen above the results are suspiciously good, however, all testing suggests there is no leakage, more detailed analysis will be added later. There is the potential that the data itself has leakage, however I find this unlikely, due to the reputable sources used. 
+As seen above the results are suspiciously good, however, all testing suggests there is no leakage. There is the potential that the data itself has leakage, however I find this unlikely, due to the reputable sources used. <br>
+
+#### Randomized data experiment
+To ensure that key features contain no "cheating" signals, I performed a null-model experiment by randomizing all input features other than key ones such as Time, Price, Ticker. When testing the model trained on random noise, it achieved 60% accuracy with almost no ability to predict positive cases (f1=0.002). In contrast to the real model trained on genuine features, the real model consistently performs significantly better, essentially proving that there is no leakage regarding the key features of the model. <br>
+You may view the raw program output when running a null-model experiment at: https://github.com/oneye5/nzx_predictor/blob/main/LeakageTestResults.txt <br>
 
 # How to run
 TODO 
