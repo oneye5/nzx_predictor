@@ -142,7 +142,7 @@ public class CsvWriter {
     builder.append("BusinessConfidence,");
     builder.append("MissingFlag,");
     builder.append("ConsumerConfidence,");
-    builder.append("MissingFlag");
+    builder.append("MissingFlag,");
 
     builder.append("ConsumptionExpenditureHouseholdCalAdjustChainLink,");
     builder.append("MissingFlag,");
@@ -167,7 +167,7 @@ public class CsvWriter {
     builder.append("ConsumptionExpenditureGovtCurrentPrice,");
     builder.append("MissingFlag,");
     builder.append("GrossFixedCapitalFormationGovtCurrentPrice,");
-    builder.append("MissingFlag,");
+    builder.append("MissingFlag");
     builder.append("\n");
   }
 

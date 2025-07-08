@@ -3,7 +3,7 @@ from typing import Tuple
 
 import numpy as np
 import sys
-from sklearn.preprocessing import RobustScaler
+from sklearn.preprocessing import RobustScaler, MinMaxScaler
 import pandas as pd
 from datetime import datetime
 
@@ -30,6 +30,36 @@ def add_engineered_features(data : pd.DataFrame) -> pd.DataFrame:
 
     data['ImmediateInterestVolatility'] = data['LongTermInterestRate'] - data['ImmediateTermInterestRate']
     data['ShortTermInterestVolatility'] = data['LongTermInterestRate'] - data['ShortTermInterestRate']
+
+    return data
+
+def scale_time(data : pd.DataFrame) -> pd.DataFrame:
+    scaler = MinMaxScaler()
+    data['Time'] = scaler.fit_transform(data['Time'])
+    return data
+
+def replace_with_random_values(data: pd.DataFrame, ignore_columns) -> pd.DataFrame:
+    """
+    :param data: all data
+    :param ignore_columns: an array of column names to ignore
+    :return: data with all non-ignored columns set as random values
+    """
+    n = len(data)
+    rng = np.random.default_rng()
+
+    for col in data.columns:
+        if col in ignore_columns:
+            continue
+
+        arr = data[col].to_numpy()  # raw numpy view
+
+        # numeric?
+        if np.issubdtype(arr.dtype, np.number):
+            lo, hi = arr.min(), arr.max()
+            data[col] = rng.uniform(lo, hi, size=n)
+        else: # everything else (object, category, strings etc)
+            idx = rng.integers(0, n, size=n)
+            data[col] = arr[idx]
 
     return data
 

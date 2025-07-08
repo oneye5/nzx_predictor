@@ -8,7 +8,8 @@ from sklearn.metrics import classification_report
 from NZX_scraper.python.ml_and_preprocess.DataProcessing import (load_data, generate_labels, preprocess_data
 , add_engineered_features, split_data_by_time, one_hot_encode_tickers,
                                                                  print_date_range, print_simulated_trades_summary,
-                                                                 print_sample_data)
+                                                                 print_sample_data, scale_time)
+from NZX_scraper.python.ml_and_preprocess.LeakageTests import test_leakage
 from NZX_scraper.python.ml_and_preprocess.Learner import train_and_evaluate
 
 
@@ -29,6 +30,8 @@ def main() -> None:
     data = load_data(args.csv_file)
     print(f"Loaded {len(data)} rows")
 
+    #test_leakage(data,args)
+    #return
 
     seconds_in_year = 31557600  # average year in seconds
     max_time = data['Time'].max()
@@ -60,6 +63,7 @@ def preprocess_and_eval(data, args) -> Tuple[pd.DataFrame, pd.DataFrame, pd.Data
     # Split for testing / training
     train, test = split_data_by_time(data, args.lookahead, args.splitsize)
     train_start, train_end, test_start, test_end = print_date_range(test, train)
+
 
     # Process data
     train = add_engineered_features(train)
