@@ -156,16 +156,7 @@ public class CsvWriter {
     var gTrendsCompanyName = data.gTrendsCompanyName().get(index);
 
     // check for invalid data ====================================================
-    if (prices == null || prices.chart == null
-            || prices.chart.result == null
-            || prices.chart.result.isEmpty()
-            || prices.chart.result.getFirst().indicators == null
-            || prices.chart.result.getFirst().indicators.adjclose.size() == 0
-            || prices.chart.result.getFirst().indicators.adjclose
-                .getFirst().adjclose.size() == 0
-            || prices.chart.result.getFirst().indicators.adjclose
-                .getFirst().adjclose.stream().anyMatch(Objects::isNull)
-    ) {
+    if (!isDataValid(data, index)) {
       return;
     }
 
@@ -257,7 +248,7 @@ public class CsvWriter {
         cpi4.put(key,cpiMap.get(key)[3]);
       });
 
-      // Get interpolated values
+      // Get most recent applicable values
       var r1 = TimeSeriesInterpolator.getMostRecent(cpi1.keySet(), cpi1::get, time,(v)->!v.equals(0.0));
       var r2 = TimeSeriesInterpolator.getMostRecent(cpi2.keySet(), cpi2::get, time,(v)->!v.equals(0.0));
       var r3 = TimeSeriesInterpolator.getMostRecent(cpi3.keySet(), cpi3::get, time,(v)->!v.equals(0.0));
@@ -310,6 +301,18 @@ public class CsvWriter {
     return max;
   }
 
+  public boolean isDataValid(AllData d, int instanceIndex) {
+    var prices = d.priceInformation().get(instanceIndex);
+		return prices != null && prices.chart != null
+						&& prices.chart.result != null
+						&& !prices.chart.result.isEmpty()
+						&& prices.chart.result.getFirst().indicators != null
+						&& prices.chart.result.getFirst().indicators.adjclose.size() != 0
+						&& prices.chart.result.getFirst().indicators.adjclose
+						.getFirst().adjclose.size() != 0
+						&& prices.chart.result.getFirst().indicators.adjclose
+						.getFirst().adjclose.stream().noneMatch(Objects::isNull);
+  }
   public String getFilePath() {
     return filePath;
   }

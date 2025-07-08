@@ -19,7 +19,7 @@ def main() -> None:
                         help='Days to look ahead for labels')
     parser.add_argument('--boundary', type=int, default=0.07,
                         help='What % gain does a share price need in order to receive class 1')
-    parser.add_argument('--splitsize', type=float, default=0.97,)
+    parser.add_argument('--splitsize', type=float, default=0.97,) # 0.97 results in roughly 6month test periods
     args = parser.parse_args()
 
 
