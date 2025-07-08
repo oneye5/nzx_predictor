@@ -31,7 +31,7 @@ Test to: 2024-07-04<br>
 Lookahead time = 366 days<br>
 Training split size = ~6 months<br>
 
-## Summary of All Results
+### Summary of All Results
 
 | Class | Precision | Recall | F1-Score | Support |
 |-------|-----------|--------|----------|---------|
@@ -44,7 +44,7 @@ Training split size = ~6 months<br>
 
 ---
 
-## Trading Simulation Summary (Buy on Class 1)
+### Trading Simulation Summary (Buy on Class 1)
 
 - **Simulated trades executed**: 29,008  
 - **Average return**: 21.40%  
