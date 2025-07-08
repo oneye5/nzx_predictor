@@ -54,10 +54,8 @@ Training split size = ~6 months<br>
 - **Median**: 11.66%  
 - **75th percentile (UQ)**: 25.05%
 
-
-
 # Credibility and leakage
-TODO
+As seen above the results are suspiciously good, however, all testing suggests there is no leakage, more detailed analysis will be added later. There is the potential that the data itself has leakage, however I find this unlikely, due to the reputable sources used. 
 
 # How to run
 TODO 
