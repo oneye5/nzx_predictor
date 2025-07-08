@@ -31,28 +31,29 @@ Test to: 2024-07-04<br>
 Lookahead time = 366 days<br>
 Training split size = ~6 months<br>
 
-Summary of all results =======<br>
+## Summary of All Results
+
 | Class | Precision | Recall | F1-Score | Support |
 |-------|-----------|--------|----------|---------|
-| 0.0   | 0.7236    | 0.7184 | 0.7210   | 39126   |
-| 1.0   | 0.5951    | 0.6013 | 0.5982   | 26932   |
+| 0.0   | 0.7382    | 0.7093 | 0.7235   | 41,649  |
+| 1.0   | 0.5827    | 0.6174 | 0.5995   | 27,378  |
 
-**Accuracy**: 0.6707  
-**Macro Avg**: Precision = 0.6594, Recall = 0.6599, F1-Score = 0.6596  
-**Weighted Avg**: Precision = 0.6712, Recall = 0.6707, F1-Score = 0.6709
+**Accuracy**: 0.6729  
+**Macro Avg**: Precision = 0.6604, Recall = 0.6633, F1-Score = 0.6615  
+**Weighted Avg**: Precision = 0.6765, Recall = 0.6729, F1-Score = 0.6743  
 
 ---
 
-=== Trading Simulation Summary ===<br>
-(Note, these are raw values. Taxes and broker fees are not taken into account)<br>
-- **Trades Executed**: 27,212  
-- **Average Return**: 18.54%  
-- **Win Rate**: 72.2%  (gain > 0)
-- **Sharpe Ratio**: 0.404  
-- **Return Range**: -89.66% … 578.64%  
-- **25th Percentile (LQ)**: -0.62%  
-- **75th Percentile (UQ)**: 25.81%  
-- **Median Return**: 12.23%
+## Trading Simulation Summary (Buy on Class 1)
+
+- **Simulated trades executed**: 29,008  
+- **Average return**: 21.40%  
+- **Sharpe ratio**: 0.332  
+- **Return range**: -89.66% to 700.00%  
+- **25th percentile (LQ)**: -0.65%  
+- **Median**: 11.66%  
+- **75th percentile (UQ)**: 25.05%
+
 
 
 # Credibility and leakage
