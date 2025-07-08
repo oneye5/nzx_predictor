@@ -7,7 +7,8 @@ import pandas as pd
 from sklearn.metrics import classification_report
 from NZX_scraper.python.ml_and_preprocess.DataProcessing import (load_data, generate_labels, preprocess_data
 , add_engineered_features, split_data_by_time, one_hot_encode_tickers,
-                                                                 print_date_range, print_simulated_trades_summary)
+                                                                 print_date_range, print_simulated_trades_summary,
+                                                                 print_sample_data)
 from NZX_scraper.python.ml_and_preprocess.Learner import train_and_evaluate
 
 
@@ -64,15 +65,15 @@ def preprocess_and_eval(data, args) -> Tuple[pd.DataFrame, pd.DataFrame, pd.Data
     train = add_engineered_features(train)
     test = add_engineered_features(test)
 
-    train, tr_price_change = preprocess_data(train)
-    test, te_price_change = preprocess_data(test)
+    train, train_price_change = preprocess_data(train)
+    test, test_price_change = preprocess_data(test)
 
     print(f"done preprocessing, starting training...\n  Training from: {train_start} to: {train_end}\n"
           f"  Testing from: {test_start} to: {test_end}")
     print(f"  {(args.boundary * 100):2f}%+ gain decision boundary")
 
     test_data_labels, preds, test_data = train_and_evaluate(train, test)
-    return test_data_labels, preds, test_data, te_price_change
+    return test_data_labels, preds, test_data, test_price_change
 
 if __name__ == "__main__":
     main()

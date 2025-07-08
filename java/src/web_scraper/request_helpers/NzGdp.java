@@ -10,8 +10,13 @@ import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 import org.w3c.dom.*;
 
+/**
+ * Helper class used for parsing NzGdp raw data
+ *
+ * @author Owan Lazic
+ */
 public class NzGdp {
-	public final Map<Long, Double[]> data;
+	public final Map<Long, Double[]> data; // 12 values expected in array
 
 	private NzGdp(Map<Long, Double[]> data) {
 		this.data = data;

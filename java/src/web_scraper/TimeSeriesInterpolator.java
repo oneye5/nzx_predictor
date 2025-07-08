@@ -9,7 +9,7 @@ import java.util.function.Function;
 public class TimeSeriesInterpolator {
 	/**
 	 *	returns the interpolated value between the most recent, and last occurring datapoint
-	 *	for a given time.
+	 *	for a given time. This method was swapped out for a non-interpolated version to avoid leakage.
 	 */
 	public static Optional<Number> getInterpMostRecent(Collection<Long> times, Function<Long, Number> getValue, Long targetTime, Function<Number,Boolean> validity) {
 		List<Long> timesFiltered = times.stream()

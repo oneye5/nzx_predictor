@@ -1,7 +1,7 @@
 package web_scraper;
 
 /**
- * Contains a list of NZX listed tickers.
+ * Contains an array of NZX listed tickers.
  *
  * @author Owan Lazic
  */

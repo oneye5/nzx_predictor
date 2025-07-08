@@ -20,14 +20,23 @@ public class ApiUrls {
   public static String getNzCpi() {
     return NZ_CPI;
   }
-  public static String getNzBusinessConfidence() {return NZ_BUSINESS_CONFIDENCE;}
-  public static String getNzGdp() {return NZ_GDP;}
+  public static String getNzBusinessConfidence() {
+    return NZ_BUSINESS_CONFIDENCE;
+  }
+  public static String getNzGdp() {
+    return NZ_GDP;
+  }
 
-  private static final String NZ_GDP = "https://sdmx.oecd.org/public/rest/data/OECD.SDD.NAD,DSD_NAMAIN1@DF_QNA_EXPENDITURE_NATIO_CURR,1.1/Q..NZL.S13+S14.........?startPeriod=2000-Q1&dimensionAtObservation=AllDimensions&format=genericdata"; // XML
-  private static final String NZ_BUSINESS_CONFIDENCE = "https://sdmx.oecd.org/public/rest/data/OECD.SDD.STES,DSD_STES@DF_CLI,4.1/NZL.M.......?dimensionAtObservation=AllDimensions&format=genericdata"; // XML
-  private static final String NZ_CPI = "https://sdmx.oecd.org/public/rest/data/OECD.SDD.STES,DSD_STES@DF_FINMARK,4.0/NZL.M..PA.....?dimensionAtObservation=AllDimensions&format=jsondata"; //JSON
-  private static final String HISTORIC_PRICES = "https://query1.finance.yahoo.com/v8/finance/chart/{TICKER}?interval=1d&period1=0&period2=99999999999&includeAdjustedClose=true"; //JSON
-  private static final String FINANCIAL_INFORMATION = "https://query1.finance.yahoo.com/ws/fundamentals-timeseries/v1/finance/timeseries/{TICKER}" // JSON
+  // XML
+  private static final String NZ_GDP = "https://sdmx.oecd.org/public/rest/data/OECD.SDD.NAD,DSD_NAMAIN1@DF_QNA_EXPENDITURE_NATIO_CURR,1.1/Q..NZL.S13+S14.........?startPeriod=2000-Q1&dimensionAtObservation=AllDimensions&format=genericdata";
+  // XML
+  private static final String NZ_BUSINESS_CONFIDENCE = "https://sdmx.oecd.org/public/rest/data/OECD.SDD.STES,DSD_STES@DF_CLI,4.1/NZL.M.......?dimensionAtObservation=AllDimensions&format=genericdata";
+  //JSON
+  private static final String NZ_CPI = "https://sdmx.oecd.org/public/rest/data/OECD.SDD.STES,DSD_STES@DF_FINMARK,4.0/NZL.M..PA.....?dimensionAtObservation=AllDimensions&format=jsondata";
+  //JSON
+  private static final String HISTORIC_PRICES = "https://query1.finance.yahoo.com/v8/finance/chart/{TICKER}?interval=1d&period1=0&period2=99999999999&includeAdjustedClose=true";
+  //JSON
+  private static final String FINANCIAL_INFORMATION = "https://query1.finance.yahoo.com/ws/fundamentals-timeseries/v1/finance/timeseries/{TICKER}"
           + "?merge=false"
           + "&padTimeSeries=true"
           + "&period1=493590046"

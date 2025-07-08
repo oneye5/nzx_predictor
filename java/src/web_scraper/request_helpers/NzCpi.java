@@ -9,8 +9,12 @@ import java.time.LocalDate;
 import java.time.ZoneOffset;
 import java.util.*;
 
+/**
+ * Helper class used for parsing NzCpi raw data
+ *
+ * @author Owan Lazic
+ */
 public class NzCpi {
-
 	// Map of timestamp -> array of values [longTermRate, shortTermRate, immediateRate, exchangeRate]
 	public Map<Long, double[]> timeSeriesData;
 

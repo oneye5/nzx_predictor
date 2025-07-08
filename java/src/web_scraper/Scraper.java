@@ -15,6 +15,11 @@ import java.util.*;
 import java.util.concurrent.TimeUnit;
 import java.util.stream.IntStream;
 
+/**
+ * Gets all data, and wraps it in an 'AllData' class for easy use
+ *
+ * @author Owan Lazic
+ */
 public class Scraper {
   private static final String pathToGTrendsFetcher = "C:/Users/ocjla/Desktop/Projects/NZX_scraper/NZX_scraper/python/google_trends_data/fetch_gtrends_data.py"; //TODO make concrete implementation
 

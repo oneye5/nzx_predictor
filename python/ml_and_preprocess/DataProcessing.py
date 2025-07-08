@@ -200,7 +200,6 @@ def print_simulated_trades_summary(preds: np.ndarray, true_price_changes: np.nda
     avg_ret   = selected.mean()
     std_ret   = selected.std(ddof=0)
     sharpe    = avg_ret / std_ret if std_ret != 0 else np.nan
-    win_rate  = (selected > 0).mean()
 
     mn = selected.min()
     mx = selected.max()
@@ -216,3 +215,4 @@ def print_simulated_trades_summary(preds: np.ndarray, true_price_changes: np.nda
     print(f"25th pct (LQ)               : {lq:.2%}")
     print(f"Median                      : {mdn:.2%}")
     print(f"75th pct (UQ)               : {uq:.2%}")
+
