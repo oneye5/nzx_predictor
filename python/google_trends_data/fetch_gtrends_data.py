@@ -4,7 +4,7 @@ import warnings
 from pytrends.request import TrendReq
 
 # Note, heavy rate limits are enforced with Google trends
-
+exit(-1)
 warnings.filterwarnings("ignore", category=FutureWarning)
 keyword = ""
 if len(sys.argv) > 1:

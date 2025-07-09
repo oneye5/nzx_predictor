@@ -33,10 +33,45 @@ def add_engineered_features(data : pd.DataFrame) -> pd.DataFrame:
 
     return data
 
-def scale_time(data : pd.DataFrame) -> pd.DataFrame:
-    scaler = MinMaxScaler()
-    data['Time'] = scaler.fit_transform(data['Time'])
+def min_max_scale(data, column : str, minimum : float, maximum : float):
+    data[column] = (data[column] - minimum) / (minimum - maximum)
     return data
+
+def min_max_scale_time(data):
+    global_min = data['Time'].min()
+    global_max = data['Time'].max()
+
+    return min_max_scale(data,'Time', global_min, global_max)
+
+def min_max_scale_time_double(train, test):
+    global_min = min(train['Time'].min(), test['Time'].min())
+    global_max = max(train['Time'].max(), test['Time'].max())
+
+    return min_max_scale(train,'Time',global_min,global_max), min_max_scale(test,'Time',global_min,global_max)
+
+def split_last_rows(data: pd.DataFrame) -> Tuple[pd.DataFrame, pd.DataFrame]:
+    # find all one‑hot ticker columns
+    ticker_cols = [c for c in data.columns if c.startswith("Ticker_")]
+
+    if not ticker_cols:
+        raise ValueError("No one‑hot columns found with prefix 'Ticker_'")
+
+    # reconstruct a 'Ticker' column
+    # idxmax gives the column label with the 1 (or highest) in each row
+    data['_Ticker'] = (
+        data[ticker_cols]
+        .idxmax(axis=1)                 # e.g. "Ticker_ANZ"
+        .str.replace('Ticker_', '', 1)  # -> "ANZ"
+    )
+
+    # find the index of the last (max Time) row per reconstructed ticker
+    last_idx = data.groupby('_Ticker', sort=False)['Time'].idxmax()
+
+    # slice them out
+    last_rows    = data.loc[last_idx].drop(columns=['_Ticker']).reset_index(drop=True)
+    all_but_last = data.drop(index=last_idx).drop(columns=['_Ticker']).reset_index(drop=True)
+
+    return all_but_last, last_rows
 
 def replace_with_random_values(data: pd.DataFrame, ignore_columns) -> pd.DataFrame:
     """
@@ -147,7 +182,7 @@ def load_data(csv_file : str) -> pd.DataFrame:
         print(f"Error loading file: {e}")
         sys.exit(1)
 
-def generate_labels(df: pd.DataFrame, lookahead_days: int, change_ratio_threshold : float = 0.05) -> pd.DataFrame:
+def generate_labels(df: pd.DataFrame, lookahead_days: int, change_ratio_threshold : float = 0.05, keep_unlabeled : bool = False) -> pd.DataFrame:
     """
     For each ticker group:
       - sort by Time
@@ -189,7 +224,10 @@ def generate_labels(df: pd.DataFrame, lookahead_days: int, change_ratio_threshol
 
     # Combine all tickers and drop unlabeled rows
     combined = pd.concat(results, ignore_index=True)
-    labeled = combined.dropna(subset=['Label'])
+    if not keep_unlabeled:
+        labeled = combined.dropna(subset=['Label'])
+    else:
+        labeled = combined
 
     # Clean up helper columns
     return labeled.drop(columns=['TargetTime', 'FutureTime', 'FuturePrice'])
