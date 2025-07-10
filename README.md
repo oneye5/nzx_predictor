@@ -24,12 +24,14 @@ Because of this a few aproaches are combined together in order to attempt to pro
 Due to the complexity of these testing aproaches, I have created a diagram to hopefully make this easier to interpret. <br>
 ![Untitled Diagram drawio](https://github.com/user-attachments/assets/36d9e3b4-a1a8-40fb-8f10-eac11a446642)
 
-**As of 8/07/25 the model performs as follows:**<br>
+**As of 10/07/25 the model performs as follows:**<br>
 Train from: 2000-01-02<br>
+Test from: 2009/09/20<br>
 Test to: 2024-07-04<br>
 7.000000%+ gain decision boundary<br>
 Lookahead time = 366 days<br>
 Training split size = ~6 months<br>
+Probability needed for class 1 predictions = 0.8<br>
 
 ### Summary of All Results
 
@@ -60,6 +62,14 @@ Training split size = ~6 months<br>
 | Median Return              | 15.00%    |
 | 75th Percentile (UQ)       | 32.23%    |
 | Standard Deviation         | 0.713     |
+
+# Performance discussion
+#### Optimisations
+I found that adjusting the probability threshold to 0.8 netted the best returns, this is to be expected. While doing this results in the model having low class 1 recall, it trades this for higher precision, meaning that the identified class 1 predictions have a lower chance of being wrong. I think this is a good goal to have, my thought process here was to minimise losses, and this change resulted in a change from the simulated backtest from an average return of ~20% to ~30%. <br><br>
+
+I found that a prediction period (the amount of time into the future the model tries to predict) of 1 year, strikes a good balance between accuracy and potential returns. Upon testing with a period of 2 years, I noticed that accuracy had a negligable impact, however the longer period would essentially halve the annual returns. And upon shortening the prediction period, I noticed significant reductions in accuracy, likely due to the data granularity, where some features are only reported annualy, so the model will be predicting on 'old' data. <br><br>
+
+I went into this project expected MLP's to perform well in this application, partially due to the paper referenced that noted MLP's to be one of the strongest performing models behind LTSM's, however in practice I was unable to get meaningful results, this may be an issue with the data itself not being suitable for use in an NN. The models I found to work best for this application were all tree based and I found the best generalization when using a VotingClassifier using a variety of these different tree based models, ideally I would include other types of models for better diversity however I found none which were satisfactory. 
 
 # Credibility and leakage
 As seen above the results are suspiciously good, however, all testing suggests there is no leakage. There is the potential that the data itself has leakage, however I find this unlikely, due to the reputable sources used. <br>
