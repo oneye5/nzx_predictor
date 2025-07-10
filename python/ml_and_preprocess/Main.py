@@ -17,7 +17,7 @@ from NZX_scraper.python.ml_and_preprocess.Learner import train_and_evaluate, tra
 
 def main() -> None:
     args = parse_args()
-
+    args.evaluate = True
     data = load_data(args.csv_file)
 
     if args.evaluate:
@@ -55,7 +55,8 @@ def test_performance(data : pd.DataFrame, args) -> None:
     all_labels = []
     all_price_changes = []
 
-    for i in range(0, 20):
+    for i in range(0, 30):
+        print(f"Test number: {i} out of 30")
         trim_time = max_time - (i * seconds_in_year / 2.0)  # aims for 6 monthly increments
         d = data[data['Time'] <= trim_time].copy()
         labels, preds, test_data, test_price_change = preprocess_and_eval(d, args)
@@ -76,7 +77,7 @@ def preprocess_and_eval(data, args) -> Tuple[pd.DataFrame, pd.DataFrame, pd.Data
     #print_sample_data(data)
 
     # Split for testing / training
-    train, test = split_data_by_time(data, args.lookahead, args.splitsize)
+    train, test = split_data_by_time(data, args.lookahead, args.split)
     train_start, train_end, test_start, test_end = print_date_range(test, train)
 
     # scale time

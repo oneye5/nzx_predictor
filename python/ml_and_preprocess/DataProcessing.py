@@ -274,6 +274,7 @@ def print_simulated_trades_summary(preds: np.ndarray, true_price_changes: np.nda
     lq = np.percentile(selected, 25)
     uq = np.percentile(selected, 75)
     mdn = np.percentile(selected, 50)
+    std = np.std(selected)
 
     print("=== Trading Simulation Summary (buy on class 1) ===")
     print(f"Simulated trades executed   : {selected.size}")
@@ -283,4 +284,5 @@ def print_simulated_trades_summary(preds: np.ndarray, true_price_changes: np.nda
     print(f"25th pct (LQ)               : {lq:.2%}")
     print(f"Median                      : {mdn:.2%}")
     print(f"75th pct (UQ)               : {uq:.2%}")
+    print(f"standard deviation          : {std:.3}")
 
