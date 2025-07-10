@@ -14,8 +14,8 @@ This paper outlines research done into machine learning and finance, and has pro
 
 # Project structure:
 There are two separate runnable programs, each used in conjunction with each other.<br>
-There is a Java program, that scrapes Yahoo Finance for financial information on selected tickers. It then converts from raw Json strings / XML to a cleaned .csv file.<br>
-From there, there is a Python program that further processes this data from the .csv file, performing one hot encoding, feature engineering and normalization tasks, where the data is used to train and evaluate a machine learning model.<br>
+There exists a Java program, that collects historical macroeconomic and financial data. It then converts from raw Json strings / XML to a cleaned .csv file.<br>
+From there, this data is read by a Python program that further processes this data from the .csv file, performing one hot encoding, feature engineering and normalization tasks, where the data is used to train and evaluate a machine learning model.<br>
 
 # Data sources:
 Yahoo finance for share price & financials,<br>
