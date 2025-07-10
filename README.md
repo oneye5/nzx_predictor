@@ -35,24 +35,31 @@ Training split size = ~6 months<br>
 
 | Class | Precision | Recall | F1-Score | Support |
 |-------|-----------|--------|----------|---------|
-| 0.0   | 0.7382    | 0.7093 | 0.7235   | 41,649  |
-| 1.0   | 0.5827    | 0.6174 | 0.5995   | 27,378  |
+| 0.0   | 0.5955    | 0.9414 | 0.7295   | 42,399  |
+| 1.0   | 0.6457    | 0.1430 | 0.2342   | 31,642  |
 
-**Accuracy**: 0.6729  
-**Macro Avg**: Precision = 0.6604, Recall = 0.6633, F1-Score = 0.6615  
-**Weighted Avg**: Precision = 0.6765, Recall = 0.6729, F1-Score = 0.6743  
+**Accuracy:** 0.6002  
+**Total Support:** 74,041
+
+| Metric        | Precision | Recall | F1-Score | Support |
+|---------------|-----------|--------|----------|---------|
+| Macro Avg     | 0.6206    | 0.5422 | 0.4818   | 74,041  |
+| Weighted Avg  | 0.6169    | 0.6002 | 0.5178   | 74,041  |
 
 ---
 
 ### Trading Simulation Summary (Buy on Class 1)
 
-- **Simulated trades executed**: 29,008  
-- **Average return**: 21.40%  
-- **Sharpe ratio**: 0.332  
-- **Return range**: -89.66% to 700.00%  
-- **25th percentile (LQ)**: -0.65%  
-- **Median**: 11.66%  
-- **75th percentile (UQ)**: 25.05%
+| Metric                     | Value     |
+|----------------------------|-----------|
+| Simulated Trades Executed | 7,008     |
+| Average Return             | 31.63%    |
+| Sharpe Ratio               | 0.444     |
+| Return Range               | -89.66% … 566.67% |
+| 25th Percentile (LQ)       | 0.38%     |
+| Median Return              | 15.00%    |
+| 75th Percentile (UQ)       | 32.23%    |
+| Standard Deviation         | 0.713     |
 
 # Credibility and leakage
 As seen above the results are suspiciously good, however, all testing suggests there is no leakage. There is the potential that the data itself has leakage, however I find this unlikely, due to the reputable sources used. <br>
