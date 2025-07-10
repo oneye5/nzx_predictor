@@ -78,6 +78,7 @@ You may view the raw program output when running a null-model experiment at: htt
 A known issue is when testing on a new network, I was getting no response from OECD, this was because OECD is unfamiliar with the IP and gave a captcha prompt. To get around this, you can simply open this link in your browser and click through the captcha, upon completing this, the data collection should work:<br> https://sdmx.oecd.org/public/rest/data/OECD.SDD.STES,DSD_STES@DF_FINMARK,4.0/NZL.M..PA.....?dimensionAtObservation=AllDimensions&format=jsondata <br>
 
 # Planned features and improvements:
+Fix a bug where the java program is only able to get price data for a small subset of all tickers<br>
 Create robust system for locating file locations<br>
 Create a desktop GUI for ease of use<br>
 Include more dataset features<br>
