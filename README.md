@@ -1,39 +1,39 @@
-# What is this project?
-This is a project made to provide supplimentary information regarding NZX listed company prospects.
+# About this project:
+This is a project made to provide supplementary information regarding NZX listed company prospects.
 It is currently in development and unfinished.
 
 # Research used:
 https://bfi.uchicago.edu/wp-content/uploads/2023/07/BFI_WP_2023-100.pdf <br>
-This paper outlines research done into machine learning and finance, and has provided highly valueable insight for the machine learning portion of this application.
+This paper outlines research done into machine learning and finance, and has provided highly valuable insight for the machine learning portion of this application.
 
-# How does this program work?
-There are two seperate runnable programs, each used in conjunction with each other.<br>
+# How it works:
+There are two separate runnable programs, each used in conjunction with each other.<br>
 
 There is a Java program, that scrapes Yahoo Finance for financial information on selected tickers. It then converts from raw Json strings / XML to a cleaned .csv file.<br>
 
-From there, there is a Python program that further processes this data from the .csv file, performing one hot encoding, feature engineering and normalization tasks, where the data is then passed onto SKLearn to create and evaluate a machine learning model. 
+From there, there is a Python program that further processes this data from the .csv file, performing one hot encoding, feature engineering and normalization tasks, where the data is used to train and evaluate a machine learning model. 
 
-# Data sources
+# Data sources:
 Yahoo finance for share price & financials,<br>
 OECD for economic related information,<br>
 Google Trends for search interest
 
-# Performance
+# Performance:
 Testing is an incredibly important part of a program of this nature, if this were to be used to inform investing decisions, poor testing could result in misleading users, leading to financial losses. <br>
-Because of this a few aproaches are combined together in order to attempt to prove the models performance, generalization and accuracy. <br>
-Due to the complexity of these testing aproaches, I have created a diagram to hopefully make this easier to interpret. <br>
+Because of this a few approaches are combined together in order to attempt to prove the models performance, generalization and accuracy. <br>
+Due to the complexity of these testing approaches, I have created a diagram to hopefully make this easier to interpret. <br>
 ![Untitled Diagram drawio](https://github.com/user-attachments/assets/36d9e3b4-a1a8-40fb-8f10-eac11a446642)
 
-**As of 10/07/25 the model performs as follows:**<br>
+**As of 10-07-25 the model performs as follows:**<br>
 Train from: 2000-01-02<br>
-Test from: 2009/09/20<br>
+Test from: 2009-09-20<br>
 Test to: 2024-07-04<br>
 7.000000%+ gain decision boundary<br>
 Lookahead time = 366 days<br>
 Training split size = ~6 months<br>
 Probability needed for class 1 predictions = 0.8<br>
 
-### Summary of All Results
+### Summary of All Results:
 
 | Class | Precision | Recall | F1-Score | Support |
 |-------|-----------|--------|----------|---------|
@@ -50,7 +50,7 @@ Probability needed for class 1 predictions = 0.8<br>
 
 ---
 
-### Trading Simulation Summary (Buy on Class 1)
+### Trading Simulation Summary (Buy on Class 1):
 
 | Metric                     | Value     |
 |----------------------------|-----------|
@@ -63,28 +63,39 @@ Probability needed for class 1 predictions = 0.8<br>
 | 75th Percentile (UQ)       | 32.23%    |
 | Standard Deviation         | 0.713     |
 
-# Performance discussion
-#### Optimisations
+# Performance discussion:
+#### Optimisations:
 I found that adjusting the probability threshold to 0.8 netted the best returns, this is to be expected. While doing this results in the model having low class 1 recall, it trades this for higher precision, meaning that the identified class 1 predictions have a lower chance of being wrong. I think this is a good goal to have, my thought process here was to minimise losses, and this change resulted in a change from the simulated backtest from an average return of ~20% to ~30%. <br><br>
 
-I found that a prediction period (the amount of time into the future the model tries to predict) of 1 year, strikes a good balance between accuracy and potential returns. Upon testing with a period of 2 years, I noticed that accuracy had a negligable impact, however the longer period would essentially halve the annual returns. And upon shortening the prediction period, I noticed significant reductions in accuracy, likely due to the data granularity, where some features are only reported annualy, so the model will be predicting on 'old' data. <br><br>
+I found that a prediction period (the amount of time into the future the model tries to predict) of 1 year, strikes a good balance between accuracy and potential returns. Upon testing with a period of 2 years, I noticed that accuracy had a negligible impact, however the longer period would essentially halve the annual returns. And upon shortening the prediction period, I noticed significant reductions in accuracy, likely due to the data granularity, where some features are only reported annually, so the model will be predicting on 'old' data. <br><br>
 
-I went into this project expected MLP's to perform well in this application, partially due to the paper referenced that noted MLP's to be one of the strongest performing models behind LTSM's, however in practice I was unable to get meaningful results, this may be an issue with the data itself not being suitable for use in an NN. The models I found to work best for this application were all tree based and I found the best generalization when using a VotingClassifier using a variety of these different tree based models, ideally I would include other types of models for better diversity however I found none which were satisfactory. 
+I went into this project expected MLPs to perform well in this application, partially due to the paper referenced that noted MLPs to be one of the strongest performing models behind LTSM's, however in practice I was unable to get meaningful results, this may be an issue with the data itself not being suitable for use in an NN. The models I found to work best for this application were all tree based and I found the best generalization when using a VotingClassifier using a variety of these different tree based models, ideally I would include other types of models for better diversity however I found none which were satisfactory. 
 
-# Credibility and leakage
+# Credibility and leakage:
 As seen above the results are suspiciously good, however, all testing suggests there is no leakage. There is the potential that the data itself has leakage, however I find this unlikely, due to the reputable sources used. <br>
 
-#### Randomized data experiment
+#### Randomized data experiment:
 To ensure that key features contain no "cheating" signals, I performed a null-model experiment by randomizing all input features other than key ones such as Time, Price, Ticker. When testing the model trained on random noise, it achieved 60% accuracy with almost no ability to predict positive cases (f1=0.002). In contrast to the real model trained on genuine features, the real model consistently performs significantly better, essentially proving that there is no leakage regarding the key features of the model. <br>
 You may view the raw program output when running a null-model experiment at: https://github.com/oneye5/nzx_predictor/blob/main/LeakageTestResults.txt <br>
 
-# How to run
-TODO 
+# How to run:
+TODO<br>
+This will
 
-# How to use
+# How to use:
 TODO
 
-# API Caveats
-Upon testing the program on a new network, the program failed due not getting no responce from OECD, this was because OECD is unfamiliar with the IP and gave a captcha prompt. To get around this, you can simply open this link in your browser and click through the captcha, upon completing this, the data collection should work:<br> https://sdmx.oecd.org/public/rest/data/OECD.SDD.STES,DSD_STES@DF_FINMARK,4.0/NZL.M..PA.....?dimensionAtObservation=AllDimensions&format=jsondata <br>
+# API Caveats:
+A known issue is when testing on a new network, I was getting no response from OECD, this was because OECD is unfamiliar with the IP and gave a captcha prompt. To get around this, you can simply open this link in your browser and click through the captcha, upon completing this, the data collection should work:<br> https://sdmx.oecd.org/public/rest/data/OECD.SDD.STES,DSD_STES@DF_FINMARK,4.0/NZL.M..PA.....?dimensionAtObservation=AllDimensions&format=jsondata <br>
+
+# Planned features and improvements:
+Create robust system for locating file locations<br>
+Create a desktop GUI for ease of use<br>
+Include more dataset features<br>
+Create a build, ideally with minimal setup, a 1 click executable is the goal here<br>
+Refactor the web scraper<br>
+
+
+
 
 
