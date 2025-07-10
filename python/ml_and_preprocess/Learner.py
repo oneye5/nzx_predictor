@@ -28,7 +28,7 @@ from sklearn.metrics import (
     classification_report,
 )
 
-_probability_decision_boundary = 0.8
+_probability_decision_boundary = 0.7
 
 def train_and_predict(train_data, target, label_col='Label') -> pd.DataFrame:
     # split out labels and drop them

@@ -3,6 +3,7 @@ package web_scraper;
 import com.google.gson.Gson;
 import misc.AllData;
 import web_scraper.request_helpers.BusinessConfidenceNz;
+import web_scraper.request_helpers.GTrends;
 import web_scraper.request_helpers.NzCpi;
 import misc.Pair;
 import pojos.oecd.cpi_nz.SdmxResponse;
@@ -26,7 +27,7 @@ public class Scraper {
   public static AllData getAllData(String[] tickers){
     List<HistoricPriceInformation> historicPrices;
     List<FinancialInformation> financials;
-    List<List<Pair<Long,Float>>> gTrendsCompanyName;
+    GTrends gTrends;
     NzCpi nzCpi;
 
     var pair = getHistoricAndFinancial(tickers);
@@ -42,7 +43,7 @@ public class Scraper {
             })
             .toList();
     // Use company names to get Google trends data on them
-    gTrendsCompanyName = getAllGTrendsData(companyNames);
+    gTrends = GTrends.getAllGTrendsData(companyNames);
 
     // Get interest rate data
     System.out.println("Getting nz CPI");
@@ -58,7 +59,7 @@ public class Scraper {
     var gdp = NzGdp.getFromRaw(HtmlGetter.get(ApiUrls.getNzGdp()));
 
     // Wrap data and return
-    return new AllData(historicPrices, financials, gTrendsCompanyName, nzCpi,businessConfidence, gdp);
+    return new AllData(historicPrices, financials, gTrends, nzCpi,businessConfidence, gdp);
   }
 
   /**
@@ -68,6 +69,7 @@ public class Scraper {
     List<HistoricPriceInformation> historicPrices = Collections.synchronizedList(new ArrayList<>());
     List<FinancialInformation> financials = Collections.synchronizedList(new ArrayList<>());
     Gson gson = new Gson();
+    List<String> tickerss = new ArrayList<>();
     // Get historic & financial data, populate associated lists with pojo's
     Arrays.stream(tickers)
             .parallel()
@@ -82,76 +84,21 @@ public class Scraper {
 
                 historicPrices.add(prices);
                 financials.add(financial);
+                tickerss.add(ticker);
               }
               catch (Exception ignored) {} // if an error occurs (likely due to a lack of data), the ticker is simply skipped
             });
+
+    // validation pass, prints invalid data to console
+    for(int i = 0; i < historicPrices.size(); i++) {
+      String ticker = tickerss.get(i);
+      var data = historicPrices.get(i);
+      boolean valid = CsvWriter.isDataValid(new AllData(historicPrices,null,null,null,null,null), i);
+
+      if(!valid)
+        System.out.println(ticker + " price data is invalid, the ticker will be omitted.");
+
+    }
     return new Pair<>(historicPrices, financials);
   }
-
-  /**
-   * Gets the Google trends data for a single search phrase.
-   * This method runs a small python program in order to do this, then reads its output, parses it, and returns.
-   */
-  public static List<Pair<Long,Float>> getGTrendsData(String companyShortName) throws IOException, InterruptedException {
-    System.out.println("getting google trends data for " + companyShortName);
-    ProcessBuilder pb = new ProcessBuilder("python", pathToGTrendsFetcher, companyShortName);
-    Process process = pb.start();
-
-    // Read output
-    BufferedReader reader = new BufferedReader(new InputStreamReader(process.getInputStream()));
-    List<String> lines = new ArrayList<>();
-    String line;
-    while ((line = reader.readLine()) != null) {
-      lines.add(line);
-    }
-
-    // Wait for completion
-    process.waitFor(30, TimeUnit.SECONDS);
-
-    if (process.exitValue() != 0) {
-      throw new RuntimeException("Python script failed for '" + companyShortName + "'");
-    }
-
-    // Parse the data (skip header row)
-    List<Pair<Long,Float>> result = new ArrayList<>();
-    for (int i = 1; i < lines.size(); i++) {
-      String[] parts = lines.get(i).split(",");
-      if (parts.length >= 2) {
-        Long timestamp = Long.parseLong(parts[0].trim());
-        Float value = Float.parseFloat(parts[1].trim());
-        result.add(new Pair<>(timestamp, value));
-      }
-    }
-
-    return result;
-  }
-
-  /**
-   * Takes an ordered list of long company names, this will be directly used as the Google trends search phrase.
-   * Returns a list of a list of a pair:
-   * The outer list represents each different ticker.
-   * The inner list represents the collection of data instances.
-   * The pair represents a data point, where the long represents the unix timestamp, and the float represents the value of the datapoint (google search interest)
-   */
-  public static List<List<Pair<Long, Float>>> getAllGTrendsData(List<String> companyNames) {
-    List<List<Pair<Long, Float>>> results = new ArrayList<>(Collections.nCopies(companyNames.size(), null));
-
-    IntStream.range(0, companyNames.size()) // int stream to preserve list order
-            .parallel()
-            .forEach(i -> {
-              try {
-                if (companyNames.get(i) == null) {
-                  results.set(i,null);
-                } else {
-                  var result = getGTrendsData(companyNames.get(i));
-                  results.set(i, result);
-                }
-              } catch (Exception e) {
-                results.set(i, null);
-              }
-            });
-
-    return results;
-  }
-
 }

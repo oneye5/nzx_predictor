@@ -7,10 +7,10 @@ package web_scraper;
  */
 public class Tickers {
   public static final String[] TICKERS = {
-          "ANZ.NZ", "AFCA", "AFI.NZ",   "AFT.NZ", "AGG.NZ", "AGL.NZ", "AIA.NZ", "AIR.NZ", "ALF.NZ", "2CC2.NZ",
+          "ANZ.NZ", "AFCA.NZ", "AFI.NZ",   "AFT.NZ", "AGG.NZ", "AGL.NZ", "AIA.NZ", "AIR.NZ", "ALF.NZ", "2CC2.NZ",
           "AOF.NZ", "APA.NZ", "APL.NZ", "ARB.NZ", "ARG.NZ", "ASD.NZ", "ASF.NZ", "ASP.NZ", "ASR.NZ", "ATM.NZ",
           "AUE.NZ", "AUS.NZ", "BAI.NZ", "BFG.NZ", "BGP.NZ", "BIF.NZ", "BIT.NZ", "BLT.NZ", "BOT.NZ", "BPG.NZ",
-          "BRM.NZ", "BRW.NZ", "BTC.NZ", "CCC.NZ", "CDI.NZ", "CEN.NZ", "CHI.NZ", "CMO.NZ", "CNU.NZ", "CO2.NZ",
+          "BRM.NZ", "BRW.NZ", "BTC.NZ", "CCC.NZ", "CDI.NZ", "CEN.NZ", "CHI.NZ", "CMO.NZ", "CNU.NZ",
           "CRP.NZ", "CVT.NZ", "DGL.NZ", "DIV.NZ", "DOW.NZ", "EBO.NZ", "EMF.NZ", "EMG.NZ", "ENS.NZ", "ERD.NZ",
           "ESG.NZ", "EUF.NZ", "EUG.NZ", "FBU.NZ", "FCG.NZ", "FCT.NZ", "FNZ.NZ", "FPH.NZ", "FRW.NZ", "FSF.NZ",
           "FWL.NZ", "GBF.NZ", "GEN.NZ", "GGB.NZ", "GLD.NZ", "GMT.NZ", "GNE.NZ", "GPR.NZ", "GTK.NZ", "GXH.NZ",

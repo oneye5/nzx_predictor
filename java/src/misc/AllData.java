@@ -2,6 +2,7 @@ package misc;
 import pojos.yahoo.financials.FinancialInformation;
 import pojos.yahoo.prices.HistoricPriceInformation;
 import web_scraper.request_helpers.BusinessConfidenceNz;
+import web_scraper.request_helpers.GTrends;
 import web_scraper.request_helpers.NzCpi;
 import web_scraper.request_helpers.NzGdp;
 
@@ -14,8 +15,6 @@ import java.util.List;
  */
 public record AllData(List<HistoricPriceInformation> priceInformation,
 											List<FinancialInformation> financialInformation,
-											List<List<Pair<Long,Float>>> gTrendsCompanyName,
+											GTrends gTrendsCompanyName,
 											NzCpi nzCpi, BusinessConfidenceNz businessConfidence,
-											NzGdp nzGdp) {
-
-}
+											NzGdp nzGdp) {}

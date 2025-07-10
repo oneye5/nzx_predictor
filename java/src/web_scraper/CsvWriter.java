@@ -38,7 +38,6 @@ public class CsvWriter {
     // 'unpack' AllData into individual lists
     List<HistoricPriceInformation> historicPrices = data.priceInformation();
     List<FinancialInformation> financialInformation = data.financialInformation();
-    List<List<Pair<Long,Float>>> gTrendsCompanyName = data.gTrendsCompanyName();
 
     // needed pre-processing steps
     expectedFinancialFeatures = getFinancialFeatureCount(financialInformation);
@@ -177,7 +176,7 @@ public class CsvWriter {
   private void writeTickerInfoToBuffer(StringBuilder b, AllData data, int index) {
     var prices = data.priceInformation().get(index);
     var financialInformation = data.financialInformation().get(index);
-    var gTrendsCompanyName = data.gTrendsCompanyName().get(index);
+    var gTrendsCompanyName = data.gTrendsCompanyName().data().get(index);
 
     // check for invalid data ====================================================
     if (!isDataValid(data, index)) {
@@ -202,6 +201,9 @@ public class CsvWriter {
           financialFeatures.add(Result.NULL_VALUE);
         }
       }
+
+      if(prices.chart.result.getFirst().indicators.adjclose.getFirst().adjclose.get(i) == null)
+        return;
 
       double price = prices.chart.result.getFirst().indicators.adjclose.getFirst().adjclose.get(i);
       String ticker = prices.chart.result.getFirst().meta.symbol;
@@ -348,17 +350,16 @@ public class CsvWriter {
     return max;
   }
 
-  public boolean isDataValid(AllData d, int instanceIndex) {
+  public static boolean isDataValid(AllData d, int instanceIndex) {
     var prices = d.priceInformation().get(instanceIndex);
+
 		return prices != null && prices.chart != null
 						&& prices.chart.result != null
 						&& !prices.chart.result.isEmpty()
 						&& prices.chart.result.getFirst().indicators != null
 						&& prices.chart.result.getFirst().indicators.adjclose.size() != 0
 						&& prices.chart.result.getFirst().indicators.adjclose
-						.getFirst().adjclose.size() != 0
-						&& prices.chart.result.getFirst().indicators.adjclose
-						.getFirst().adjclose.stream().noneMatch(Objects::isNull);
+						.getFirst().adjclose.size() != 0;
   }
   public String getFilePath() {
     return filePath;
