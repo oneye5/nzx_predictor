@@ -32,18 +32,18 @@ Due to the complexity of these testing approaches, I have created a diagram to h
 Train from: 2000-01-02<br>
 Test from: 2009-09-20<br>
 Test to: 2024-07-04<br>
-7.000000%+ gain decision boundary<br>
+13%+ gain decision boundary<br>
 Lookahead time = 366 days<br>
 Training split size = ~6 months<br>
-Probability needed for class 1 predictions = 0.8<br>
+Probability needed for class 1 predictions = 0.79<br>
 
 ### Summary of All Results:
-| Metric        | Class 0 (No Gain) | Class 1 (Gain > 7%) | Accuracy | Macro Avg | Weighted Avg |
-| ------------- | ----------------- | ------------------- | -------- | --------- | ------------ |
-| **Precision** | 0.6558            | 0.5731              | 0.6556   | 0.6144    | 0.6273       |
-| **Recall**    | 0.9991            | 0.0022              |          | 0.5007    | 0.6556       |
-| **F1-score**  | 0.7918            | 0.0044              |          | 0.3981    | 0.5205       |
-| **Support**   | 125,954           | 66,209              | 192,163  | 192,163   | 192,163      |
+| Metric        | Class 0 (No Gain) | Class 1 (Gain > decision boundry) | Accuracy | Macro Avg | Weighted Avg |
+| ------------- | ----------------- | --------------------------------- | -------- | --------- | ------------ |
+| **Precision** | 0.6558            | 0.5731                            | 0.6556   | 0.6144    | 0.6273       |
+| **Recall**    | 0.9991            | 0.0022                            |          | 0.5007    | 0.6556       |
+| **F1-score**  | 0.7918            | 0.0044                            |          | 0.3981    | 0.5205       |
+| **Support**   | 125,954           | 66,209                            | 192,163  | 192,163   | 192,163      |
 
 
 ---
