@@ -30,6 +30,7 @@ Due to the complexity of these testing approaches, I have created a diagram to h
 
 ## As of 11-07-25 the model performs as follows:<br>
 Train from: 2000-01-02<br>
+Train to: test data start
 Test from: 2009-09-20<br>
 Test to: 2024-07-04<br>
 13%+ gain decision boundary<br>
