@@ -18,7 +18,7 @@ from NZX_scraper.python.ml_and_preprocess.Learner import train_and_evaluate, tra
 def main() -> None:
     args = parse_args()
     data = load_data(args.csv_file)
-    args.evaluate = True
+    #args.evaluate = True
     if args.evaluate:
         test_performance(data,args)
     else:
