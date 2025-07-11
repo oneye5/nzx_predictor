@@ -28,7 +28,7 @@ Because of this a few approaches are combined together in order to attempt to pr
 Due to the complexity of these testing approaches, I have created a diagram to hopefully make this easier to interpret. <br>
 ![Untitled Diagram drawio](https://github.com/user-attachments/assets/36d9e3b4-a1a8-40fb-8f10-eac11a446642)
 
-**As of 10-07-25 the model performs as follows:**<br>
+## As of 11-07-25 the model performs as follows:**<br>
 Train from: 2000-01-02<br>
 Test from: 2009-09-20<br>
 Test to: 2024-07-04<br>
