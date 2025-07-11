@@ -28,7 +28,7 @@ from sklearn.metrics import (
     classification_report,
 )
 
-_probability_decision_boundary = 0.7
+_probability_decision_boundary = 0.79
 
 def train_and_predict(train_data, target, label_col='Label') -> pd.DataFrame:
     # split out labels and drop them
@@ -77,7 +77,7 @@ def train_and_evaluate(train_data, test_data, label_col='Label') -> Tuple[pd.Dat
     print(preds_proba.std())
 
     # Evaluate with custom threshold
-    preds = (preds_proba[:, 1] >= _probability_decision_boundary).astype(int)  # Use 0.6 threshold for class 1
+    preds = (preds_proba[:, 1] >= _probability_decision_boundary).astype(int)
 
     # Evaluation metrics
     print(classification_report(test_data_labels, preds, digits=4))

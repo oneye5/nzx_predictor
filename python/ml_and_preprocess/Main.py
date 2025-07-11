@@ -17,9 +17,8 @@ from NZX_scraper.python.ml_and_preprocess.Learner import train_and_evaluate, tra
 
 def main() -> None:
     args = parse_args()
-    args.evaluate = True
     data = load_data(args.csv_file)
-
+    args.evaluate = True
     if args.evaluate:
         test_performance(data,args)
     else:
@@ -119,8 +118,8 @@ def parse_args() -> argparse.Namespace:
     parser.add_argument(
         '--boundary',
         type=float,
-        default=0.07,
-        help='Threshold for class‑1 (e.g. 0.07 => 7%% gain; default: 0.07)'
+        default=0.13,
+        help='Threshold for class‑1 (e.g. 0.08 => 8% gain; default: 0.09)'
     )
 
     parser.add_argument(
