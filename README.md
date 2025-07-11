@@ -28,44 +28,37 @@ Because of this a few approaches are combined together in order to attempt to pr
 Due to the complexity of these testing approaches, I have created a diagram to hopefully make this easier to interpret. <br>
 ![Untitled Diagram drawio](https://github.com/user-attachments/assets/36d9e3b4-a1a8-40fb-8f10-eac11a446642)
 
-**As of 10-07-25 the model performs as follows:**<br>
+## As of 11-07-25 the model performs as follows:<br>
 Train from: 2000-01-02<br>
 Test from: 2009-09-20<br>
 Test to: 2024-07-04<br>
-7.000000%+ gain decision boundary<br>
+13%+ gain decision boundary<br>
 Lookahead time = 366 days<br>
 Training split size = ~6 months<br>
-Probability needed for class 1 predictions = 0.8<br>
+Probability needed for class 1 predictions = 0.79<br>
 
 ### Summary of All Results:
+| Metric        | Class 0 (No Gain) | Class 1 (Gain > decision boundry) | Accuracy | Macro Avg | Weighted Avg |
+| ------------- | ----------------- | --------------------------------- | -------- | --------- | ------------ |
+| **Precision** | 0.6558            | 0.5731                            | 0.6556   | 0.6144    | 0.6273       |
+| **Recall**    | 0.9991            | 0.0022                            |          | 0.5007    | 0.6556       |
+| **F1-score**  | 0.7918            | 0.0044                            |          | 0.3981    | 0.5205       |
+| **Support**   | 125,954           | 66,209                            | 192,163  | 192,163   | 192,163      |
 
-| Class | Precision | Recall | F1-Score | Support |
-|-------|-----------|--------|----------|---------|
-| 0.0   | 0.5955    | 0.9414 | 0.7295   | 42,399  |
-| 1.0   | 0.6457    | 0.1430 | 0.2342   | 31,642  |
-
-**Accuracy:** 0.6002  
-**Total Support:** 74,041
-
-| Metric        | Precision | Recall | F1-Score | Support |
-|---------------|-----------|--------|----------|---------|
-| Macro Avg     | 0.6206    | 0.5422 | 0.4818   | 74,041  |
-| Weighted Avg  | 0.6169    | 0.6002 | 0.5178   | 74,041  |
 
 ---
 
 ### Trading Simulation Summary (Buy on Class 1):
-
-| Metric                     | Value     |
-|----------------------------|-----------|
-| Simulated Trades Executed | 7,008     |
-| Average Return             | 31.63%    |
-| Sharpe Ratio               | 0.444     |
-| Return Range               | -89.66% … 566.67% |
-| 25th Percentile (LQ)       | 0.38%     |
-| Median Return              | 15.00%    |
-| 75th Percentile (UQ)       | 32.23%    |
-| Standard Deviation         | 0.713     |
+| Metric                    | Value            |
+| ------------------------- | ---------------- |
+| Simulated Trades Executed | 253              |
+| Average Return            | 25.67%           |
+| Sharpe Ratio              | 1.018            |
+| Return Range              | -33.33% … 75.94% |
+| 25th Percentile (LQ)      | 5.79%            |
+| Median Return             | 19.13%           |
+| 75th Percentile (UQ)      | 44.97%           |
+| Standard Deviation        | 0.252            |
 
 # Credibility and leakage:
 As seen above the results are suspiciously good, however, all testing suggests there is no leakage. There is the potential that the data itself has leakage, however I find this unlikely, due to the reputable sources used. <br>
@@ -78,7 +71,7 @@ You may view the raw program output when running a null-model experiment at: htt
 A known issue is when testing on a new network, I was getting no response from OECD, this was because OECD is unfamiliar with the IP and gave a captcha prompt. To get around this, you can simply open this link in your browser and click through the captcha, upon completing this, the data collection should work:<br> https://sdmx.oecd.org/public/rest/data/OECD.SDD.STES,DSD_STES@DF_FINMARK,4.0/NZL.M..PA.....?dimensionAtObservation=AllDimensions&format=jsondata <br>
 
 # Planned features and improvements:
-Fix a bug where the java program is only able to get price data for a small subset of all tickers<br>
+~~Fix a bug where the java program is only able to get price data for a small subset of all tickers<br>~~
 Create robust system for locating file locations<br>
 Create a desktop GUI for ease of use<br>
 Include more dataset features<br>
@@ -91,7 +84,9 @@ I found that adjusting the probability threshold to 0.8 netted the best returns,
 
 I found that a prediction period (the amount of time into the future the model tries to predict) of 1 year, strikes a good balance between accuracy and potential returns. Upon testing with a period of 2 years, I noticed that accuracy had a negligible impact, however the longer period would essentially halve the annual returns. And upon shortening the prediction period, I noticed significant reductions in accuracy, likely due to the data granularity, where some features are only reported annually, so the model will be predicting on 'old' data. <br><br>
 
-I went into this project expecting MLPs to perform well in this application, partially due to the paper referenced that noted MLPs to be one of the strongest performing models behind LTSM's, however in practice I was unable to get meaningful results, this may be an issue with the data itself not being suitable for use in an NN. The models I found to work best for this application were all tree based and I found the best generalization when using a VotingClassifier using a variety of these different tree based models, ideally I would include other types of models for better diversity however I found none which were satisfactory. 
+I went into this project expecting MLPs to perform well in this application, partially due to the paper referenced that noted MLPs to be one of the strongest performing models behind LTSM's, however in practice I was unable to get meaningful results, this may be an issue with the data itself not being suitable for use in an NN. The models I found to work best for this application were all tree based and I found the best generalization when using a VotingClassifier using a variety of these different tree based models, ideally I would include other types of models for better diversity however I found none which were satisfactory. <br>
+
+Upon making the model 'more picky' by increasing the gain% decision boundary and decreasing the models tollerance for uncertainty, I observered a Sharpe ratio above 1, this is apparently very impressive, however the trade off is that less tickers get class 1 predictions. Only ~8 out of the ~150 tickers recieved class 1 predictions. There is no saying if the trade off is worth it, it depends on the users needs, however users can easily tweak these values to acheive the results they are looking for. The high risk adjusted returns are likely a consequence of NZX being a relatively low efficiency market, at least when compared to markets in the US. 
 
 
 
