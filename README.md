@@ -78,6 +78,7 @@ Create a desktop GUI for ease of use<br>
 Include more dataset features<br>
 Create a build, ideally with minimal setup, a 1 click executable is the goal here<br>
 Refactor the web scraper<br>
+Print / save raw probabilities<br>
 
 # Performance discussion:
 #### Optimisations:
