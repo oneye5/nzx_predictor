@@ -49,7 +49,8 @@ Probability needed for class 1 predictions = 0.79<br>
 
 ---
 
-### Trading Simulation Summary (Buy on Class 1):
+### Trading Simulation Summary (Buy on Class 1):<br>
+Note, this tests acorss the same time range as above, buying on class 1 predictions and holding for the lookahead time, then selling, measuring the results.
 | Metric                    | Value            |
 | ------------------------- | ---------------- |
 | Simulated Trades Executed | 253              |
