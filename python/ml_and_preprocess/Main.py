@@ -6,11 +6,12 @@ import numpy as np
 import pandas as pd
 from sklearn.metrics import classification_report
 from NZX_scraper.python.ml_and_preprocess.DataProcessing import (load_data, generate_labels, preprocess_data
-, add_engineered_features, split_data_by_time, one_hot_encode_tickers,
+, add_engineered_features, split_data_by_time_ratio, one_hot_encode_tickers,
                                                                  print_date_range, print_simulated_trades_summary,
                                                                  print_sample_data, min_max_scale,
                                                                  min_max_scale_time_double,
-                                                                 split_last_rows, min_max_scale_time)
+                                                                 split_last_rows, min_max_scale_time,
+                                                                 split_data_by_time)
 from NZX_scraper.python.ml_and_preprocess.LeakageTests import test_leakage
 from NZX_scraper.python.ml_and_preprocess.Learner import train_and_evaluate, train_and_predict
 
@@ -18,7 +19,7 @@ from NZX_scraper.python.ml_and_preprocess.Learner import train_and_evaluate, tra
 def main() -> None:
     args = parse_args()
     data = load_data(args.csv_file)
-    #args.evaluate = True
+    args.evaluate = True
     if args.evaluate:
         test_performance(data,args)
     else:
@@ -43,20 +44,19 @@ def train_and_save_predictions(data : pd.DataFrame, args) -> None:
     print_sample_data(target)
 
     print("training model")
-    results = train_and_predict(data, target)
+    results = train_and_predict(data, target, args)
     print(results)
     results.to_csv(args.output, index=False)
 
 def test_performance(data : pd.DataFrame, args) -> None:
-    seconds_in_year = 31557600  # average year in seconds
     max_time = data['Time'].max()
     all_preds = []
     all_labels = []
     all_price_changes = []
 
-    for i in range(0, 30):
-        print(f"Test number: {i} out of 30")
-        trim_time = max_time - (i * seconds_in_year / 2.0)  # aims for 6 monthly increments
+    for i in range(0, args.test_count):
+        print(f"Test number: {i} out of {args.test_count}")
+        trim_time = max_time - (i * args.test_frequency * 60 * 60 * 24)
         d = data[data['Time'] <= trim_time].copy()
         labels, preds, test_data, test_price_change = preprocess_and_eval(d, args)
 
@@ -73,10 +73,9 @@ def preprocess_and_eval(data, args) -> Tuple[pd.DataFrame, pd.DataFrame, pd.Data
     # add labels
     data = generate_labels(data, args.lookahead, args.boundary)
     data = one_hot_encode_tickers(data)
-    #print_sample_data(data)
 
     # Split for testing / training
-    train, test = split_data_by_time(data, args.lookahead, args.split)
+    train, test = split_data_by_time(data, args.lookahead, args.test_period)
     train_start, train_end, test_start, test_end = print_date_range(test, train)
 
     # scale time
@@ -96,7 +95,7 @@ def preprocess_and_eval(data, args) -> Tuple[pd.DataFrame, pd.DataFrame, pd.Data
     print(f"  {(args.boundary * 100):2f}%+ gain decision boundary")
 
 
-    test_data_labels, preds, test_data = train_and_evaluate(train, test)
+    test_data_labels, preds, test_data = train_and_evaluate(train, test, args)
     return test_data_labels, preds, test_data, test_price_change
 
 def parse_args() -> argparse.Namespace:
@@ -116,17 +115,34 @@ def parse_args() -> argparse.Namespace:
     )
 
     parser.add_argument(
+        '--test_period',
+        type=int,
+        default=30,
+        help='Number of days in each test period',
+        dest = 'test_period'
+    )
+
+    parser.add_argument(
+        '--test_frequency',
+        type=int,
+        default=366,
+        help='How often testing periods occur, for example for value 30, tests occur every 30 days',
+        dest = 'test_frequency'
+    )
+
+    parser.add_argument(
+        '--test_count',
+        type=int,
+        default=15,
+        help='How many tests occur, for value 30, there are 30 iterations of tests with different time periods',
+        dest = 'test_count'
+    )
+
+    parser.add_argument(
         '--boundary',
         type=float,
         default=0.13,
         help='Threshold for class‑1 (e.g. 0.08 => 8% gain; default: 0.09)'
-    )
-
-    parser.add_argument(
-        '--split',
-        type=float,
-        default=0.97,
-        help='ONLY RELEVANT DURING TESTING MODE. Fraction of data to use for training vs splitting (default: 0.97)'
     )
 
     parser.add_argument(
@@ -140,6 +156,14 @@ def parse_args() -> argparse.Namespace:
         '-e', '--evaluate',
         action='store_true',
         help='Run in test mode, this will evaluate the models performance'
+    )
+
+    parser.add_argument(
+        '--model_probability_boundary',
+        type=float,
+        default=0.79,
+        help='Probability threshold for class‑1, defines how sure the model needs to be to classify class 1',
+        dest='m_prob_boundary'
     )
 
     return parser.parse_args()

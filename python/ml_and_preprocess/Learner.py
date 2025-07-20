@@ -28,9 +28,8 @@ from sklearn.metrics import (
     classification_report,
 )
 
-_probability_decision_boundary = 0.79
-
-def train_and_predict(train_data, target, label_col='Label') -> pd.DataFrame:
+def train_and_predict(train_data, target, args, label_col='Label') -> pd.DataFrame:
+    _probability_decision_boundary = args.m_prob_boundary
     # split out labels and drop them
     train_data_labels = train_data[label_col]
     train_data = train_data.drop(columns=[label_col])
@@ -57,7 +56,8 @@ def train_and_predict(train_data, target, label_col='Label') -> pd.DataFrame:
     return pd.DataFrame(out)
 
 
-def train_and_evaluate(train_data, test_data, label_col='Label') -> Tuple[pd.DataFrame, pd.DataFrame, pd.DataFrame]:
+def train_and_evaluate(train_data, test_data, args, label_col='Label') -> Tuple[pd.DataFrame, pd.DataFrame, pd.DataFrame]:
+    _probability_decision_boundary = args.m_prob_boundary
     train_data_labels = train_data[label_col]
     test_data_labels = test_data[label_col]
     train_data = train_data.drop(columns=[label_col])
