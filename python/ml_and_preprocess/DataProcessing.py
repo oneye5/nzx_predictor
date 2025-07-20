@@ -145,9 +145,35 @@ def random_split(data: pd.DataFrame, train_ratio: float = 0.7) -> Tuple[pd.DataF
 
     return train_df, test_df
 
-def split_data_by_time(data: pd.DataFrame, lookahead: float, train_ratio: float = 0.8)-> Tuple[pd.DataFrame, pd.DataFrame]:
+
+def split_data_by_time(data: pd.DataFrame, lookahead_days: float, test_period_days: int) -> Tuple[pd.DataFrame, pd.DataFrame]:
+    lookahead_seconds = lookahead_days * 24 * 60 * 60
+    test_period_seconds = test_period_days * 24 * 60 * 60
+
+    # Sort by time to ensure chronological order
+    df = data.sort_values('Time').reset_index(drop=True)
+
+    # Determine the latest time we can use and still generate labels
+    max_time = df['Time'].max()
+    last_label_time = max_time - lookahead_seconds
+
+    # Filter out rows beyond the last labelable time
+    df = df[df['Time'] <= last_label_time].reset_index(drop=True)
+
+    # Determine the test period start time
+    test_end_time = df['Time'].max()
+    test_start_time = test_end_time - test_period_seconds
+
+    # Split data
+    test_df = df[df['Time'] > test_start_time].reset_index(drop=True)
+    train_df = df[df['Time'] <= test_start_time].reset_index(drop=True)
+
+    return train_df, test_df
+
+
+def split_data_by_time_ratio(data: pd.DataFrame, lookahead_days: float, train_ratio: float = 0.8)-> Tuple[pd.DataFrame, pd.DataFrame]:
     # Convert lookahead from days to seconds
-    lookahead_seconds : float = lookahead * 24 * 60 * 60
+    lookahead_seconds : float = lookahead_days * 24 * 60 * 60
 
     # Sort by time to ensure chronology
     df = data.sort_values('Time').reset_index(drop=True)
