@@ -133,7 +133,7 @@ def parse_args() -> argparse.Namespace:
     parser.add_argument(
         '--test_count',
         type=int,
-        default=15,
+        default=25,
         help='How many tests occur, for value 30, there are 30 iterations of tests with different time periods',
         dest = 'test_count'
     )
