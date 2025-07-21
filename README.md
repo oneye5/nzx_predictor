@@ -28,39 +28,38 @@ Because of this a few approaches are combined together in order to attempt to pr
 Due to the complexity of these testing approaches, I have created a diagram to hopefully make this easier to interpret. <br>
 ![Untitled Diagram drawio](https://github.com/user-attachments/assets/36d9e3b4-a1a8-40fb-8f10-eac11a446642)
 
-## As of 11-07-25 the model performs as follows:<br>
+## As of 21-07-25 the model performs as follows:<br>
 Train from: 2000-01-02<br>
 Train to: test data start<br>
-Test from: 2009-09-20<br>
+Test from: 2000-05-22<br>
 Test to: 2024-07-04<br>
 13%+ gain decision boundary<br>
 Lookahead time = 366 days<br>
-Training split size = ~6 months<br>
+Training split size = 14 days<br>
 Probability needed for class 1 predictions = 0.79<br>
 
 ### Summary of All Results:
-| Metric        | Class 0 (No Gain) | Class 1 (Gain > decision boundry) | Accuracy | Macro Avg | Weighted Avg |
-| ------------- | ----------------- | --------------------------------- | -------- | --------- | ------------ |
-| **Precision** | 0.6558            | 0.5731                            | 0.6556   | 0.6144    | 0.6273       |
-| **Recall**    | 0.9991            | 0.0022                            |          | 0.5007    | 0.6556       |
-| **F1-score**  | 0.7918            | 0.0044                            |          | 0.3981    | 0.5205       |
-| **Support**   | 125,954           | 66,209                            | 192,163  | 192,163   | 192,163      |
-
+| Metric        | Class 0 (No Gain) | Class 1 (Gain > decision boundary) | Accuracy | Macro Avg | Weighted Avg |
+| ------------- | ----------------- | ---------------------------------- | -------- | --------- | ------------ |
+| **Precision** | 0.6590            | 0.8630                             | 0.6693   | 0.7610    | 0.7340       |
+| **Recall**    | 0.9891            | 0.1187                             |          | 0.5539    | 0.6693       |
+| **F1-score**  | 0.7910            | 0.2088                             |          | 0.4999    | 0.5771       |
+| **Support**   | 16,809            | 9,761                              | 26,570   | 26,570    | 26,570       |
 
 ---
 
 ### Trading Simulation Summary (Buy on Class 1):<br>
 Note, this tests acorss the same time range as above, buying on class 1 predictions and holding for the lookahead time, then selling, measuring the results.
-| Metric                    | Value            |
-| ------------------------- | ---------------- |
-| Simulated Trades Executed | 253              |
-| Average Return            | 25.67%           |
-| Sharpe Ratio              | 1.018            |
-| Return Range              | -33.33% … 75.94% |
-| 25th Percentile (LQ)      | 5.79%            |
-| Median Return             | 19.13%           |
-| 75th Percentile (UQ)      | 44.97%           |
-| Standard Deviation        | 0.252            |
+| Metric                    | Value             |
+| ------------------------- | ----------------- |
+| Simulated Trades Executed | 1343              |
+| Average Return            | 34.50%            |
+| Sharpe Ratio              | 1.453             |
+| Return Range              | -12.70% … 166.32% |
+| 25th Percentile (LQ)      | 19.73%            |
+| Median Return             | 31.50%            |
+| 75th Percentile (UQ)      | 44.15%            |
+| Standard Deviation        | 0.238             |
 
 # Credibility and leakage:
 As seen above the results are suspiciously good, however, all testing suggests there is no leakage. There is the potential that the data itself has leakage, however I find this unlikely, due to the reputable sources used. <br>
