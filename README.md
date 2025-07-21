@@ -36,6 +36,9 @@ Test to: 2024-07-04<br>
 13%+ gain decision boundary<br>
 Lookahead time = 366 days<br>
 Training split size = 14 days<br>
+Test period = 30 days<br>
+Test iterations = 25<br>
+
 Probability needed for class 1 predictions = 0.79<br>
 
 ### Summary of All Results:
