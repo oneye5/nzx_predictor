@@ -68,6 +68,9 @@ As seen above the results are suspiciously good, however, all testing suggests t
 To ensure that key features contain no "cheating" signals, I performed a null-model experiment by randomizing all input features other than key ones such as Time, Price, Ticker. When testing the model trained on random noise, it achieved 60% accuracy with almost no ability to predict positive cases (f1=0.002). In contrast to the real model trained on genuine features, the real model consistently performs significantly better, indicating that there is no leakage regarding the key features of the model. <br>
 You may view the raw program output when running a null-model experiment at: https://github.com/oneye5/nzx_predictor/blob/main/LeakageTestResults.txt <br>
 
+#### Survivorship bias:
+Data from de-listed companies is not included in the overall dataset, this can potentially skew results. There is unfortunatly little that can be done to account for this, since historic data for these companies is difficult to come by in an automated manor. It isnt all bad however, some companies have been de-listed despite strong performance, MHM Automation is a perfect example of a well performing company being de-listed due to going private. 
+
 # API Caveats:
 A known issue is when testing on a new network, I was getting no response from OECD, this was because OECD is unfamiliar with the IP and gave a captcha prompt. To get around this, you can simply open this link in your browser and click through the captcha, upon completing this, the data collection should work:<br> https://sdmx.oecd.org/public/rest/data/OECD.SDD.STES,DSD_STES@DF_FINMARK,4.0/NZL.M..PA.....?dimensionAtObservation=AllDimensions&format=jsondata <br>
 
@@ -79,6 +82,7 @@ Include more dataset features<br>
 Create a build, ideally with minimal setup, a 1 click executable is the goal here<br>
 Refactor the web scraper<br>
 Print / save raw probabilities<br>
+Account for survivorship bias with de-listed companies<br>
 
 # Performance discussion:
 #### Optimisations:
@@ -92,6 +96,4 @@ Upon making the model 'more picky' by increasing the gain% decision boundary and
 
 ### Trends in predictions & selections:
 Upon analysing the companies that the model predicts will rise in share price, I notice a few common trends. The model seems to choose companies that could be considered undervalued, and interestingly enough have high dividend yields, this is interesting because the model does not take dividends into account when classifying companies, so this is likely just a side effect of prefering steady cash flow, which happens to support these higher dividend yields, a very interesting corelation. The models predictions tend to consist of monopolistic or quasi-monopolistic companies in their given market, in a variety of industries. So in summary, since I have made the model so 'picky' it seems to have a defensive, value-oriented aproach, selection only high conviction positions. 
-
-
 
