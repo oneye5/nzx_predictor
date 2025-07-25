@@ -17,7 +17,7 @@ import java.util.*;
  *
  * @author Owan Lazic
  */
-public record BusinessConfidenceNz(Map<Long, Map<String, Float>> contents) {
+public record NzBusinessConfidence(Map<Long, Map<String, Float>> contents) {
 
 	public static final String BUSINESS = "BCICP"; // Business confidence key
 	public static final String CONSUMER = "CCICP"; // Consumer confidence key
@@ -25,7 +25,7 @@ public record BusinessConfidenceNz(Map<Long, Map<String, Float>> contents) {
 	/**
 	 * Factory method, parses raw data and returns an object of this type
 	 */
-	public static BusinessConfidenceNz getFromRaw(String html) {
+	public static NzBusinessConfidence getFromRaw(String html) {
 		try {
 			// Parse XML
 			DocumentBuilderFactory dbf = DocumentBuilderFactory.newInstance();
@@ -87,7 +87,7 @@ public record BusinessConfidenceNz(Map<Long, Map<String, Float>> contents) {
 								.put(measure, value);
 			}
 
-			return new BusinessConfidenceNz(contents);
+			return new NzBusinessConfidence(contents);
 
 		} catch (Exception e) {
 			throw new RuntimeException("Failed to parse Business Confidence XML", e);

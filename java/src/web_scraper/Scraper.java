@@ -2,19 +2,13 @@ package web_scraper;
 
 import com.google.gson.Gson;
 import misc.AllData;
-import web_scraper.request_helpers.BusinessConfidenceNz;
-import web_scraper.request_helpers.GTrends;
-import web_scraper.request_helpers.NzCpi;
+import web_scraper.request_helpers.*;
 import misc.Pair;
 import pojos.oecd.cpi_nz.SdmxResponse;
 import pojos.yahoo.financials.FinancialInformation;
 import pojos.yahoo.prices.HistoricPriceInformation;
-import web_scraper.request_helpers.NzGdp;
 
-import java.io.*;
 import java.util.*;
-import java.util.concurrent.TimeUnit;
-import java.util.stream.IntStream;
 
 /**
  * Gets all data, and wraps it in an 'AllData' class for easy use
@@ -53,13 +47,16 @@ public class Scraper {
     nzCpi = NzCpi.getFromRaw(nzCpiRaw);
 
     System.out.println("Getting business and consumer confidence data");
-    var businessConfidence = BusinessConfidenceNz.getFromRaw(HtmlGetter.get(ApiUrls.getNzBusinessConfidence()));
+    var businessConfidence = NzBusinessConfidence.getFromRaw(HtmlGetter.get(ApiUrls.getNzBusinessConfidence()));
 
     System.out.println("Getting GDP data");
     var gdp = NzGdp.getFromRaw(HtmlGetter.get(ApiUrls.getNzGdp()));
 
+    System.out.println("Getting Vehicle registration data");
+    var vr = NzVehicleRegistrations.getFromRaw(HtmlGetter.get(ApiUrls.getNzVehicleRegistrations()));
+
     // Wrap data and return
-    return new AllData(historicPrices, financials, gTrends, nzCpi,businessConfidence, gdp);
+    return new AllData(historicPrices, financials, gTrends, nzCpi,businessConfidence, gdp, vr);
   }
 
   /**
@@ -92,8 +89,7 @@ public class Scraper {
     // validation pass, prints invalid data to console
     for(int i = 0; i < historicPrices.size(); i++) {
       String ticker = tickerss.get(i);
-      var data = historicPrices.get(i);
-      boolean valid = CsvWriter.isDataValid(new AllData(historicPrices,null,null,null,null,null), i);
+      boolean valid = CsvWriter.isDataValid(new AllData(historicPrices,null,null,null,null,null, null), i);
 
       if(!valid)
         System.out.println(ticker + " price data is invalid, the ticker will be omitted.");

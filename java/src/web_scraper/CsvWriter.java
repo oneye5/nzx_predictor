@@ -7,7 +7,7 @@ import java.nio.file.Paths;
 import java.util.*;
 
 import misc.AllData;
-import web_scraper.request_helpers.BusinessConfidenceNz;
+import web_scraper.request_helpers.NzBusinessConfidence;
 import misc.Pair;
 import pojos.yahoo.financials.FinancialFeatureBase;
 import pojos.yahoo.financials.FinancialInformation;
@@ -166,6 +166,8 @@ public class CsvWriter {
     builder.append("ConsumptionExpenditureGovtCurrentPrice,");
     builder.append("MissingFlag,");
     builder.append("GrossFixedCapitalFormationGovtCurrentPrice,");
+    builder.append("MissingFlag,");
+    builder.append("VehicleRegistrations,");
     builder.append("MissingFlag");
     builder.append("\n");
   }
@@ -260,7 +262,7 @@ public class CsvWriter {
       b.append(",");
 
       // add NZ CPI info ====================================================================
-      var cpiMap = data.nzCpi().timeSeriesData;
+      var cpiMap = data.cpi().timeSeriesData;
       // split map into 4 maps for use in TimeSeriesInterpolator
       Map<Long,Double> cpi1 = new HashMap<>();
       Map<Long,Double> cpi2 = new HashMap<>();
@@ -290,12 +292,12 @@ public class CsvWriter {
       var busConf = TimeSeriesInterpolator
               .getMostRecent(
                       busConData.keySet(), // times
-                      (t)-> busConData.get(t).get(BusinessConfidenceNz.BUSINESS), // value getter
+                      (t)-> busConData.get(t).get(NzBusinessConfidence.BUSINESS), // value getter
                       time, Objects::nonNull); // validation
       var conConf = TimeSeriesInterpolator
               .getMostRecent(
                       busConData.keySet(), // times
-                      (t)-> busConData.get(t).get(BusinessConfidenceNz.CONSUMER), // value getter
+                      (t)-> busConData.get(t).get(NzBusinessConfidence.CONSUMER), // value getter
                       time, Objects::nonNull); // validation
 
       List.of(busConf,conConf).forEach(v->{
@@ -307,7 +309,7 @@ public class CsvWriter {
 
       // GDP ============================================================================================
       int expectedValueCount = 12;
-      var gdp = data.nzGdp();
+      var gdp = data.gdp();
 
       if(gdp.data.get(gdp.data.keySet().stream().toList().getFirst()).length != expectedValueCount) {
         System.out.println("Unexpected number of values in gdp data array");
@@ -327,6 +329,19 @@ public class CsvWriter {
                 number-> b.append(number).append(",1,"),
                 ()->b.append("-0.0,0,"));
       }
+
+      // Vehicle registrations ==============================================================================
+      var vr = data.vehicleRegistrations().data();
+      var valueOptional = TimeSeriesInterpolator.getMostRecent(
+              vr.keySet(),
+							vr::get,
+              time,
+              Objects::nonNull
+      );
+
+      valueOptional.ifPresentOrElse(
+              number-> b.append(number).append(",1,"),
+              ()->b.append("-0.0,0,"));
 
       // remove trailing comma
       b.delete(b.length() - 1, b.length());

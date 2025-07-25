@@ -11,7 +11,7 @@ from NZX_scraper.python.ml_and_preprocess.DataProcessing import (load_data, gene
                                                                  print_sample_data, min_max_scale,
                                                                  min_max_scale_time_double,
                                                                  split_last_rows, min_max_scale_time,
-                                                                 split_data_by_time)
+                                                                 split_data_by_time, exclude_non_nzx_tickers)
 from NZX_scraper.python.ml_and_preprocess.LeakageTests import test_leakage
 from NZX_scraper.python.ml_and_preprocess.Learner import train_and_evaluate, train_and_predict
 
@@ -68,6 +68,14 @@ def test_performance(data : pd.DataFrame, args) -> None:
     print("==== Summary of all results =====")
     print(classification_report(all_labels, all_preds, digits=4))
     print_simulated_trades_summary(np.array(all_preds), np.array(all_price_changes))
+    print("\n==== Using model params =====")
+    print(f"Lookahead days:             {args.lookahead}\n"
+          f"Test frequency days:        {args.test_frequency}\n"
+          f"Test period days:           {args.test_frequency}\n"
+          f"Test iterations:            {args.test_count}\n"
+          f"Gain% decision boundary:    {args.boundary}\n"
+          f"Model probability boundary: {args.m_prob_boundary}")
+
 
 def preprocess_and_eval(data, args) -> Tuple[pd.DataFrame, pd.DataFrame, pd.DataFrame, pd.DataFrame]:
     # add labels
@@ -76,6 +84,10 @@ def preprocess_and_eval(data, args) -> Tuple[pd.DataFrame, pd.DataFrame, pd.Data
 
     # Split for testing / training
     train, test = split_data_by_time(data, args.lookahead, args.test_period)
+
+    test = exclude_non_nzx_tickers(test)
+
+
     train_start, train_end, test_start, test_end = print_date_range(test, train)
 
     # scale time
@@ -117,7 +129,7 @@ def parse_args() -> argparse.Namespace:
     parser.add_argument(
         '--test_period',
         type=int,
-        default=30,
+        default=21,
         help='Number of days in each test period',
         dest = 'test_period'
     )
@@ -125,7 +137,7 @@ def parse_args() -> argparse.Namespace:
     parser.add_argument(
         '--test_frequency',
         type=int,
-        default=366,
+        default=177,
         help='How often testing periods occur, for example for value 30, tests occur every 30 days',
         dest = 'test_frequency'
     )
@@ -133,7 +145,7 @@ def parse_args() -> argparse.Namespace:
     parser.add_argument(
         '--test_count',
         type=int,
-        default=25,
+        default=40,
         help='How many tests occur, for value 30, there are 30 iterations of tests with different time periods',
         dest = 'test_count'
     )

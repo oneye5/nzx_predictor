@@ -1,4 +1,5 @@
 import web_scraper.*;
+import web_scraper.request_helpers.NzVehicleRegistrations;
 
 public class Main {
   public static void main(String[] args) {

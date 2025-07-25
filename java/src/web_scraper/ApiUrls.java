@@ -26,7 +26,12 @@ public class ApiUrls {
   public static String getNzGdp() {
     return NZ_GDP;
   }
+  public static String getNzVehicleRegistrations() {
+    return NZ_VEHICLE_REGISTRATIONS;
+  }
 
+  // XML
+  private static final String NZ_VEHICLE_REGISTRATIONS = "https://sdmx.oecd.org/public/rest/data/OECD.ITF,DSD_ST@DF_STREG,1.0/NZL.M...ROAD...";
   // XML
   private static final String NZ_GDP = "https://sdmx.oecd.org/public/rest/data/OECD.SDD.NAD,DSD_NAMAIN1@DF_QNA_EXPENDITURE_NATIO_CURR,1.1/Q..NZL.S13+S14.........?startPeriod=2000-Q1&dimensionAtObservation=AllDimensions&format=genericdata";
   // XML

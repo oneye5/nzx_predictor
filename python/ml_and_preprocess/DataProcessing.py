@@ -31,7 +31,33 @@ def add_engineered_features(data : pd.DataFrame) -> pd.DataFrame:
     data['ImmediateInterestVolatility'] = data['LongTermInterestRate'] - data['ImmediateTermInterestRate']
     data['ShortTermInterestVolatility'] = data['LongTermInterestRate'] - data['ShortTermInterestRate']
 
+    data['ConsumerToBusinessConfidenceRatio'] = (data['BusinessConfidence'] - data['ConsumerConfidence']) / (data['BusinessConfidence'] + epsilon)
+    data['AverageConfidenceBusinessConsumer'] = (data['BusinessConfidence'] + data['ConsumerConfidence']) / 2.0
+
+    data['GrossExpenditureGovtHousehold'] = data['ConsumptionExpenditureGovtCurrentPrice'] + data['GrossFixedCapitalFormationGovtCurrentPrice']
+    data['GovtPortionGdp'] = data['GrossFixedCapitalFormationGovtCurrentPrice'] / (data['GrossExpenditureGovtHousehold'] + epsilon)
+
+    data['GrossPeriodPurchaseOfAsset'] = data['Price'] * data['Volume']
+
+    data['EarningPerDolar'] = data['EPS_Basic'] / data['Price']
+
+    data['RelativeSizeToEconomy'] = data['GrossExpenditureGovtHousehold']/(data['AnnualBasicAverageShare'] + epsilon)
+
     return data
+
+
+def exclude_non_nzx_tickers(data: pd.DataFrame) -> pd.DataFrame:
+    # Identify one-hot encoded ticker columns
+    ticker_cols = [col for col in data.columns if col.startswith("Ticker_")]
+
+    # Find the columns that are NOT NZX tickers
+    non_nzx_cols = [col for col in ticker_cols if not col.endswith(".NZ")]
+
+    # Remove rows where any of the non-NZX columns are 1
+    mask = ~(data[non_nzx_cols] == 1).any(axis=1)
+
+    return data[mask]
+
 
 def min_max_scale(data, column : str, minimum : float, maximum : float):
     data[column] = (data[column] - minimum) / (minimum - maximum)
@@ -131,20 +157,6 @@ def preprocess_data(data : pd.DataFrame) -> Tuple[pd.DataFrame, pd.DataFrame]:
 
 def one_hot_encode_tickers(data : pd.DataFrame) -> pd.DataFrame:
     return pd.get_dummies(data, columns=['Ticker'], prefix='Ticker', dtype=int)
-
-def random_split(data: pd.DataFrame, train_ratio: float = 0.7) -> Tuple[pd.DataFrame, pd.DataFrame]:
-    # Shuffle the data with a fixed random seed for reproducibility
-    data_shuffled = data.sample(frac=1, random_state=42).reset_index(drop=True)
-
-    # Compute the split index
-    split_index = int(len(data_shuffled) * train_ratio)
-
-    # Split into train and test
-    train_df = data_shuffled.iloc[:split_index].reset_index(drop=True)
-    test_df  = data_shuffled.iloc[split_index:].reset_index(drop=True)
-
-    return train_df, test_df
-
 
 def split_data_by_time(data: pd.DataFrame, lookahead_days: float, test_period_days: int) -> Tuple[pd.DataFrame, pd.DataFrame]:
     lookahead_seconds = lookahead_days * 24 * 60 * 60
